@@ -1,0 +1,72 @@
+<%- layout("layouts/boilerplate") %>
+
+<br/>
+<div class="row">
+    <div class="col-12">
+        <h3>All Listings</h3>
+
+        <!-- Search and Filter Form -->
+        <form method="GET" action="/listings" class="mb-4 search-form">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <input type="text" name="search" class="form-control" placeholder="Search by title, location, or country" value="<%= typeof search !== 'undefined' ? search : '' %>">
+                </div>
+                <div class="col-md-2">
+                    <input type="number" name="minPrice" class="form-control" placeholder="Min Price" value="<%= typeof minPrice !== 'undefined' ? minPrice : '' %>">
+                </div>
+                <div class="col-md-2">
+                    <input type="number" name="maxPrice" class="form-control" placeholder="Max Price" value="<%= typeof maxPrice !== 'undefined' ? maxPrice : '' %>">
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">Search</button>
+                </div>
+                <div class="col-md-2">
+                    <a href="/listings" class="btn btn-secondary w-100">Clear Filters</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+    <% for (let listing of listings) { %>
+        <a href="/listings/<%=listing._id%>" class="listing-link">
+        <div class="card col listing-card" >
+            <img src="<%=listing.image%>" class="card-img-top" alt="listing image" style="height: 20rem;">
+            <div class="card-img-overlay">Listings</div>
+            <div class="card-body">
+              <p class="card-text">
+                <b><%=listing.title%></b> <br/>
+                &#8377; <%= listing.price.toLocaleString("en-IN") %>/night
+            </p>
+            </div>
+        </div>
+    <% } %>
+</div>
+
+<!-- Pagination -->
+<% if (typeof totalPages !== 'undefined' && totalPages > 1) { %>
+<div class="d-flex justify-content-center mt-4">
+    <nav aria-label="Page navigation">
+        <ul class="pagination">
+            <% if (currentPage > 1) { %>
+                <li class="page-item">
+                    <a class="page-link" href="?page=<%= currentPage - 1 %><%= typeof search !== 'undefined' ? '&search=' + encodeURIComponent(search) : '' %><%= typeof minPrice !== 'undefined' ? '&minPrice=' + minPrice : '' %><%= typeof maxPrice !== 'undefined' ? '&maxPrice=' + maxPrice : '' %>">Previous</a>
+                </li>
+            <% } %>
+
+            <% for (let i = Math.max(1, currentPage - 2); i <= Math.min(totalPages, currentPage + 2); i++) { %>
+                <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                    <a class="page-link" href="?page=<%= i %><%= typeof search !== 'undefined' ? '&search=' + encodeURIComponent(search) : '' %><%= typeof minPrice !== 'undefined' ? '&minPrice=' + minPrice : '' %><%= typeof maxPrice !== 'undefined' ? '&maxPrice=' + maxPrice : '' %>"><%= i %></a>
+                </li>
+            <% } %>
+
+            <% if (currentPage < totalPages) { %>
+                <li class="page-item">
+                    <a class="page-link" href="?page=<%= currentPage + 1 %><%= typeof search !== 'undefined' ? '&search=' + encodeURIComponent(search) : '' %><%= typeof minPrice !== 'undefined' ? '&minPrice=' + minPrice : '' %><%= typeof maxPrice !== 'undefined' ? '&maxPrice=' + maxPrice : '' %>">Next</a>
+                </li>
+            <% } %>
+        </ul>
+    </nav>
+</div>
+<% } %>
