@@ -1,0 +1,214 @@
+<%- layout("layouts/boilerplate") %>
+
+<div class="container-fluid">
+    <%- include("../includes/breadcrumb") %>
+    <div class="row">
+        <div class="col-12">
+            <div class="card chat-card">
+                <div class="card-header bg-white">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px; font-size: 0.875rem; font-weight: 600;">
+                            <%= otherParticipant.username.charAt(0).toUpperCase() %>
+                        </div>
+                        <div>
+                            <h6 class="mb-0"><%= otherParticipant.username %></h6>
+                            <small class="text-muted">About: <%= conversation.listing.title %></small>
+                        </div>
+                    </div>
+                    <div class="ms-auto">
+                        <a href="/listings/<%= conversation.listing._id %>" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-external-link-alt me-1"></i>View Listing
+                        </a>
+                    </div>
+                </div>
+
+                <div class="card-body chat-messages" id="chatMessages">
+                    <% messages.forEach(message => { %>
+                        <div class="message <%= message.sender._id.equals(currUser._id) ? 'message-own' : 'message-other' %>">
+                            <div class="message-content">
+                                <p class="mb-1"><%= message.content %></p>
+                                <small class="text-muted">
+                                    <%= new Date(message.createdAt).toLocaleString() %>
+                                    <% if (message.sender._id.equals(currUser._id)) { %>
+                                        <i class="fas fa-check ms-1" title="Sent"></i>
+                                    <% } %>
+                                </small>
+                            </div>
+                        </div>
+                    <% }); %>
+                </div>
+
+                <div class="card-footer bg-white">
+                    <form id="messageForm" class="d-flex">
+                        <input type="text" id="messageInput" class="form-control me-2" placeholder="Type your message..." maxlength="1000" required>
+                        <button type="submit" class="btn btn-primary" id="sendButton">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.chat-card {
+    height: calc(100vh - 200px);
+    max-height: 600px;
+}
+
+.chat-messages {
+    height: calc(100% - 120px);
+    overflow-y: auto;
+    padding: 1rem;
+    background-color: #f8f9fa;
+}
+
+.message {
+    margin-bottom: 1rem;
+    display: flex;
+}
+
+.message-own {
+    justify-content: flex-end;
+}
+
+.message-other {
+    justify-content: flex-start;
+}
+
+.message-content {
+    max-width: 70%;
+    padding: 0.75rem;
+    border-radius: 1rem;
+    position: relative;
+}
+
+.message-own .message-content {
+    background-color: #007bff;
+    color: white;
+    border-bottom-right-radius: 0.25rem;
+}
+
+.message-other .message-content {
+    background-color: white;
+    border: 1px solid #dee2e6;
+    border-bottom-left-radius: 0.25rem;
+}
+
+.card-footer {
+    border-top: 1px solid #dee2e6;
+    padding: 1rem;
+}
+
+#messageForm {
+    width: 100%;
+}
+
+#messageInput {
+    border-radius: 2rem;
+    border: 1px solid #dee2e6;
+    padding: 0.5rem 1rem;
+}
+
+#messageInput:focus {
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    border-color: #007bff;
+}
+
+.btn-primary {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const messageForm = document.getElementById('messageForm');
+    const messageInput = document.getElementById('messageInput');
+    const chatMessages = document.getElementById('chatMessages');
+    const conversationId = '<%= conversation._id %>';
+
+    // Auto scroll to bottom
+    function scrollToBottom() {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+    scrollToBottom();
+
+    // Handle form submission
+    messageForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const content = messageInput.value.trim();
+
+        if (!content) return;
+
+        try {
+            const response = await fetch(`/messages/${conversationId}/messages`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ message: { content } })
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                // Add message to chat
+                addMessageToChat(result.message, true);
+                messageInput.value = '';
+                scrollToBottom();
+            } else {
+                alert('Failed to send message');
+            }
+        } catch (error) {
+            console.error('Error sending message:', error);
+            alert('Error sending message');
+        }
+    });
+
+    // Function to add message to chat
+    function addMessageToChat(message, isOwn = false) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `message ${isOwn ? 'message-own' : 'message-other'}`;
+
+        messageDiv.innerHTML = `
+            <div class="message-content">
+                <p class="mb-1">${message.content}</p>
+                <small class="text-muted">
+                    ${new Date(message.createdAt).toLocaleString()}
+                    ${isOwn ? '<i class="fas fa-check ms-1" title="Sent"></i>' : ''}
+                </small>
+            </div>
+        `;
+
+        chatMessages.appendChild(messageDiv);
+    }
+
+    // Poll for new messages every 5 seconds
+    setInterval(async () => {
+        try {
+            const lastMessage = chatMessages.lastElementChild;
+            const lastMessageTime = lastMessage ?
+                new Date(lastMessage.querySelector('small').textContent.split(',')[0]).toISOString() :
+                new Date(0).toISOString();
+
+            const response = await fetch(`/messages/${conversationId}/api/messages?before=${encodeURIComponent(lastMessageTime)}`);
+            if (response.ok) {
+                const data = await response.json();
+                data.messages.forEach(message => {
+                    addMessageToChat(message);
+                });
+                if (data.messages.length > 0) {
+                    scrollToBottom();
+                }
+            }
+        } catch (error) {
+            console.error('Error polling for messages:', error);
+        }
+    }, 5000);
+});
+</script>

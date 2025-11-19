@@ -69,8 +69,38 @@
         </div>
       </div>
       <br /><br />
+      <div class="mb-3">
+        <label class="form-label">Select Location on Map</label>
+        <div id="map" style="height: 400px;" class="mb-3"></div>
+        <input type="hidden" name="listing[geometry][type]" value="Point">
+        <input type="hidden" id="lng" name="listing[geometry][coordinates][0]">
+        <input type="hidden" id="lat" name="listing[geometry][coordinates][1]">
+      </div>
+      <br /><br />
       <button class="btn btn-dark add-btn">Add</button>
       <br /><br />
     </form>
   </div>
 </div>
+
+<script>
+  const map = L.map('map').setView([20.5937, 78.9629], 5); // Default to India
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors'
+  }).addTo(map);
+
+  let marker;
+
+  map.on('click', function(e) {
+    const { lat, lng } = e.latlng;
+    document.getElementById('lat').value = lat;
+    document.getElementById('lng').value = lng;
+
+    if (marker) {
+      marker.setLatLng([lat, lng]);
+    } else {
+      marker = L.marker([lat, lng]).addTo(map);
+    }
+  });
+</script>

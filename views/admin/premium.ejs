@@ -1,0 +1,228 @@
+<%- layout("layouts/boilerplate") %>
+
+<div class="container-fluid">
+    <%- include("../includes/breadcrumb") %>
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-4">Premium Management</h1>
+
+            <!-- Statistics Cards -->
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title">Total Premium</h5>
+                            <h2 class="text-primary"><%= stats.totalPremium %></h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title">Active Premium</h5>
+                            <h2 class="text-success"><%= stats.activePremium %></h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title">Featured Listings</h5>
+                            <h2 class="text-warning"><%= stats.featuredListings %></h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title">Expired Premium</h5>
+                            <h2 class="text-danger"><%= stats.expiredPremium %></h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0">Premium Listings</h5>
+                                <div class="d-flex gap-2">
+                                    <a href="?filter=all" class="btn btn-outline-primary <%= filter === 'all' ? 'active' : '' %>">All</a>
+                                    <a href="?filter=active" class="btn btn-outline-success <%= filter === 'active' ? 'active' : '' %>">Active</a>
+                                    <a href="?filter=expired" class="btn btn-outline-danger <%= filter === 'expired' ? 'active' : '' %>">Expired</a>
+                                    <a href="?filter=featured" class="btn btn-outline-warning <%= filter === 'featured' ? 'active' : '' %>">Featured</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Listings Table -->
+            <div class="row mt-3">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Listing</th>
+                                            <th>Owner</th>
+                                            <th>Tier</th>
+                                            <th>Status</th>
+                                            <th>Activated</th>
+                                            <th>Expires</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% listings.forEach(listing => { %>
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex align-items-center">
+                                                        <img src="<%= listing.image %>" alt="<%= listing.title %>" class="rounded me-3" style="width: 50px; height: 50px; object-fit: cover;">
+                                                        <div>
+                                                            <h6 class="mb-0"><%= listing.title %></h6>
+                                                            <small class="text-muted"><%= listing.location %></small>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td><%= listing.owner.username %></td>
+                                                <td>
+                                                    <% if (listing.premiumTier) { %>
+                                                        <span class="badge bg-primary"><%= listing.premiumTier.toUpperCase() %></span>
+                                                    <% } else { %>
+                                                        <span class="text-muted">-</span>
+                                                    <% } %>
+                                                </td>
+                                                <td>
+                                                    <% if (listing.premiumTier && new Date(listing.premiumExpiry) > new Date()) { %>
+                                                        <span class="badge bg-success">Active</span>
+                                                    <% } else if (listing.premiumTier && new Date(listing.premiumExpiry) <= new Date()) { %>
+                                                        <span class="badge bg-danger">Expired</span>
+                                                    <% } else { %>
+                                                        <span class="badge bg-secondary">Regular</span>
+                                                    <% } %>
+                                                    <% if (listing.isFeatured) { %>
+                                                        <br><small class="text-warning"><i class="fas fa-star"></i> Featured</small>
+                                                    <% } %>
+                                                </td>
+                                                <td>
+                                                    <% if (listing.premiumActivatedAt) { %>
+                                                        <%= new Date(listing.premiumActivatedAt).toLocaleDateString() %>
+                                                    <% } else { %>
+                                                        -
+                                                    <% } %>
+                                                </td>
+                                                <td>
+                                                    <% if (listing.premiumExpiry) { %>
+                                                        <%= new Date(listing.premiumExpiry).toLocaleDateString() %>
+                                                        <% if (new Date(listing.premiumExpiry) <= new Date()) { %>
+                                                            <br><small class="text-danger">Expired</small>
+                                                        <% } else { %>
+                                                            <br><small class="text-success"><%= Math.ceil((new Date(listing.premiumExpiry) - new Date()) / (1000 * 60 * 60 * 24)) %> days left</small>
+                                                        <% } %>
+                                                    <% } else { %>
+                                                        -
+                                                    <% } %>
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group" role="group">
+                                                        <% if (!listing.premiumTier || new Date(listing.premiumExpiry) <= new Date()) { %>
+                                                            <button type="button" class="btn btn-sm btn-success" data-bs-toggle="modal" data-bs-target="#manageModal<%= listing._id %>">
+                                                                <i class="fas fa-plus"></i> Activate
+                                                            </button>
+                                                        <% } else { %>
+                                                            <button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#manageModal<%= listing._id %>">
+                                                                <i class="fas fa-edit"></i> Manage
+                                                            </button>
+                                                        <% } %>
+                                                    </div>
+                                                </td>
+                                            </tr>
+
+                                            <!-- Management Modal -->
+                                            <div class="modal fade" id="manageModal<%= listing._id %>" tabindex="-1">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title">Manage Premium - <%= listing.title %></h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                        </div>
+                                                        <form action="/premium/admin/<%= listing._id %>" method="POST">
+                                                            <div class="modal-body">
+                                                                <div class="mb-3">
+                                                                    <label class="form-label">Action</label>
+                                                                    <select name="action" class="form-select" required>
+                                                                        <% if (!listing.premiumTier || new Date(listing.premiumExpiry) <= new Date()) { %>
+                                                                            <option value="activate">Activate Premium</option>
+                                                                        <% } else { %>
+                                                                            <option value="extend">Extend Premium</option>
+                                                                            <option value="deactivate">Deactivate Premium</option>
+                                                                        <% } %>
+                                                                    </select>
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label class="form-label">Tier</label>
+                                                                    <select name="tier" class="form-select">
+                                                                        <option value="">Select Tier</option>
+                                                                        <option value="basic" <%= listing.premiumTier === 'basic' ? 'selected' : '' %>>Basic</option>
+                                                                        <option value="premium" <%= listing.premiumTier === 'premium' ? 'selected' : '' %>>Premium</option>
+                                                                        <option value="gold" <%= listing.premiumTier === 'gold' ? 'selected' : '' %>>Gold</option>
+                                                                    </select>
+                                                                </div>
+                                                                <div class="mb-3">
+                                                                    <label class="form-label">Expiry Date</label>
+                                                                    <input type="date" name="expiry" class="form-control" value="<%= listing.premiumExpiry ? new Date(listing.premiumExpiry).toISOString().split('T')[0] : '' %>">
+                                                                </div>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                                                            </div>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        <% }); %>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Pagination -->
+                            <% if (totalPages > 1) { %>
+                                <div class="d-flex justify-content-center mt-4">
+                                    <nav aria-label="Page navigation">
+                                        <ul class="pagination">
+                                            <% if (currentPage > 1) { %>
+                                                <li class="page-item">
+                                                    <a class="page-link" href="?page=<%= currentPage - 1 %><%= filter !== 'all' ? '&filter=' + filter : '' %>">Previous</a>
+                                                </li>
+                                            <% } %>
+
+                                            <% for (let i = Math.max(1, currentPage - 2); i <= Math.min(totalPages, currentPage + 2); i++) { %>
+                                                <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                                                    <a class="page-link" href="?page=<%= i %><%= filter !== 'all' ? '&filter=' + filter : '' %>"><%= i %></a>
+                                                </li>
+                                            <% } %>
+
+                                            <% if (currentPage < totalPages) { %>
+                                                <li class="page-item">
+                                                    <a class="page-link" href="?page=<%= currentPage + 1 %><%= filter !== 'all' ? '&filter=' + filter : '' %>">Next</a>
+                                                </li>
+                                            <% } %>
+                                        </ul>
+                                    </nav>
+                                </div>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

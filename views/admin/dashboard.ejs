@@ -1,0 +1,112 @@
+<%- layout("layouts/boilerplate") %>
+
+<div class="container-fluid">
+    <%- include("../includes/breadcrumb") %>
+    <div class="row">
+        <div class="col-12">
+            <h1 class="mb-4">Admin Dashboard</h1>
+
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title">Total Reviews</h5>
+                            <h2 class="text-primary"><%= stats.totalReviews %></h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title">Reported Reviews</h5>
+                            <h2 class="text-warning"><%= stats.reportedReviews %></h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title">Total Comments</h5>
+                            <h2 class="text-secondary"><%= stats.totalComments %></h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title">Reported Comments</h5>
+                            <h2 class="text-danger"><%= stats.reportedComments %></h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-3">
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title">Moderated Reviews</h5>
+                            <h2 class="text-success"><%= stats.moderatedReviews %></h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title">Moderated Comments</h5>
+                            <h2 class="text-success"><%= stats.moderatedComments %></h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title">Total Listings</h5>
+                            <h2 class="text-info"><%= stats.totalListings %></h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title">Premium Listings</h5>
+                            <h2 class="text-warning"><%= stats.totalPremium || 0 %></h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title">Active Premium</h5>
+                            <h2 class="text-success"><%= stats.activePremium || 0 %></h2>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title">Featured Listings</h5>
+                            <h2 class="text-primary"><%= stats.featuredListings || 0 %></h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Quick Actions</h5>
+                            <div class="d-flex gap-3">
+                                <a href="/admin/reviews" class="btn btn-primary">Moderate Reviews</a>
+                                <a href="/admin/comments" class="btn btn-warning">Moderate Comments</a>
+                                <a href="/premium/admin" class="btn btn-info">Manage Premium</a>
+                                <a href="/listings" class="btn btn-secondary">View Listings</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

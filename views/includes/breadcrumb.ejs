@@ -1,0 +1,17 @@
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb bg-transparent p-0 m-0">
+        <li class="breadcrumb-item">
+            <a href="/" class="text-decoration-none">
+                <i class="fas fa-home me-1"></i>Home
+            </a>
+        </li>
+        <li class="breadcrumb-item">
+            <a href="/listings" class="text-decoration-none">Listings</a>
+        </li>
+        <% if (typeof listing !== 'undefined') { %>
+            <li class="breadcrumb-item active" aria-current="page">
+                <%- listing.title %>
+            </li>
+        <% } %>
+    </ol>
+</nav>

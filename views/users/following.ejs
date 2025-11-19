@@ -1,0 +1,31 @@
+<% layout("layouts/boilerplate") %>
+
+<div class="row mt-3">
+    <div class="col-md-8 offset-md-2">
+        <div class="card">
+            <div class="card-header">
+                <h3><%= user.username || user.email %> is Following</h3>
+                <a href="/users/profile/<%= user._id %>" class="btn btn-outline-primary btn-sm">Back to Profile</a>
+            </div>
+            <div class="card-body">
+                <% if (following.length === 0) { %>
+                    <p class="text-muted">Not following anyone yet.</p>
+                <% } else { %>
+                    <div class="list-group">
+                        <% following.forEach(user => { %>
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-0"><%= user.username || user.email %></h6>
+                                    <small class="text-muted">
+                                        <%= user.followersCount %> followers • <%= user.followingCount %> following
+                                    </small>
+                                </div>
+                                <a href="/users/profile/<%= user._id %>" class="btn btn-outline-primary btn-sm">View Profile</a>
+                            </div>
+                        <% }); %>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>

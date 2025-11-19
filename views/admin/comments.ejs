@@ -1,0 +1,95 @@
+<%- layout("layouts/boilerplate") %>
+
+<div class="container-fluid">
+    <%- include("../includes/breadcrumb") %>
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>Comment Moderation</h1>
+                <a href="/admin" class="btn btn-secondary">Back to Dashboard</a>
+            </div>
+
+            <% if (comments.length === 0) { %>
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    No reported comments to moderate at this time.
+                </div>
+            <% } else { %>
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">Reported Comments (<%= comments.length %>)</h5>
+
+                        <% comments.forEach(comment => { %>
+                            <div class="comment-moderation-item border-bottom py-4">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="d-flex align-items-start">
+                                            <img src="https://via.placeholder.com/48x48?text=U" alt="User avatar" class="rounded-circle me-3" style="width: 48px; height: 48px;">
+                                            <div class="flex-grow-1">
+                                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                                    <div>
+                                                        <h6 class="mb-1">
+                                                            <%= comment.author ? comment.author.username : 'Anonymous' %>
+                                                            <% if (comment.parent) { %>
+                                                                <span class="badge bg-info ms-2">Reply</span>
+                                                            <% } %>
+                                                        </h6>
+                                                        <div class="text-muted small">
+                                                            <%= new Date(comment.createdAt).toLocaleDateString() %>
+                                                            • <%= comment.listing ? comment.listing.title : 'Unknown Listing' %>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <p class="mb-2"><%= comment.content %></p>
+
+                                                <% if (comment.replies && comment.replies.length > 0) { %>
+                                                    <div class="replies-preview mt-2">
+                                                        <small class="text-muted">
+                                                            <i class="fas fa-reply me-1"></i>
+                                                            <%= comment.replies.length %> repl<%= comment.replies.length === 1 ? 'y' : 'ies' %>
+                                                        </small>
+                                                    </div>
+                                                <% } %>
+
+                                                <div class="reports-info mt-3">
+                                                    <h6 class="text-danger">Reports (<%= comment.reports.length %>):</h6>
+                                                    <% comment.reports.forEach(report => { %>
+                                                        <div class="report-item bg-light p-2 rounded mb-1">
+                                                            <small>
+                                                                <strong><%= report.reportedBy ? report.reportedBy.username : 'Anonymous' %></strong>
+                                                                reported on <%= new Date(report.reportedAt).toLocaleDateString() %>:
+                                                                <em><%= report.reason %></em>
+                                                            </small>
+                                                        </div>
+                                                    <% }); %>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="d-flex flex-column gap-2">
+                                            <form method="POST" action="/listings/<%= comment.listing._id %>/comments/<%= comment._id %>/moderate?_method=POST" class="d-inline">
+                                                <input type="hidden" name="action" value="approve">
+                                                <button type="submit" class="btn btn-success w-100 mb-2">
+                                                    <i class="fas fa-check me-2"></i>Approve & Clear Reports
+                                                </button>
+                                            </form>
+                                            <form method="POST" action="/listings/<%= comment.listing._id %>/comments/<%= comment._id %>/moderate?_method=POST" class="d-inline"
+                                                  onsubmit="return confirm('Are you sure you want to remove this comment? This action cannot be undone.')">
+                                                <input type="hidden" name="action" value="remove">
+                                                <button type="submit" class="btn btn-danger w-100">
+                                                    <i class="fas fa-trash me-2"></i>Remove Comment
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }); %>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</div>

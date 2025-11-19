@@ -64,9 +64,36 @@
       </div>
       </div>
       <br /><br />
+      <div class="mb-3">
+        <label class="form-label">Select Location on Map</label>
+        <div id="map" style="height: 400px;" class="mb-3"></div>
+        <input type="hidden" name="listing[geometry][type]" value="Point">
+        <input type="hidden" id="lng" name="listing[geometry][coordinates][0]" value="<%= listing.geometry ? listing.geometry.coordinates[0] : '' %>">
+        <input type="hidden" id="lat" name="listing[geometry][coordinates][1]" value="<%= listing.geometry ? listing.geometry.coordinates[1] : '' %>">
+      </div>
+      <br /><br />
       <div class="d-flex justify-content-start">
       <button class="btn btn-dark edit-btn mt-3">Edit</button>
       </div>
     </form>
   </div>
 </div>
+
+<script>
+  const lat = document.getElementById('lat').value || 20.5937;
+  const lng = document.getElementById('lng').value || 78.9629;
+  const map = L.map('map').setView([lat, lng], 5);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors'
+  }).addTo(map);
+
+  let marker = L.marker([lat, lng]).addTo(map);
+
+  map.on('click', function(e) {
+    const { lat, lng } = e.latlng;
+    document.getElementById('lat').value = lat;
+    document.getElementById('lng').value = lng;
+    marker.setLatLng([lat, lng]);
+  });
+</script>

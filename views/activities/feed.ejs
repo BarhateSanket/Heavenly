@@ -1,0 +1,47 @@
+<% layout("layouts/boilerplate") %>
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <h1 class="mb-4">Activity Feed</h1>
+
+            <div id="activity-feed">
+                <% activities.forEach(activity => { %>
+                    <div class="card mb-3 activity-item" data-activity-id="<%= activity._id %>">
+                        <div class="card-body">
+                            <div class="d-flex align-items-start">
+                                <img src="<%= activity.actor.avatar || '/default-avatar.png' %>"
+                                     class="rounded-circle me-3"
+                                     width="40" height="40" alt="Avatar">
+                                <div class="flex-grow-1">
+                                    <p class="mb-1">
+                                        <strong><%= activity.actor.username || activity.actor.email %></strong>
+                                        <%= getActivityText(activity) %>
+                                        <small class="text-muted">
+                                            <%= timeAgo(activity.createdAt) %>
+                                        </small>
+                                    </p>
+                                    <% if (activity.targetData) { %>
+                                        <div class="activity-target">
+                                            <%= renderActivityTarget(activity) %>
+                                        </div>
+                                    <% } %>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+
+            <% if (hasMore) { %>
+                <div class="text-center mt-4">
+                    <button id="load-more" class="btn btn-outline-primary">
+                        Load More Activities
+                    </button>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+<script src="/js/activityFeed.js"></script>

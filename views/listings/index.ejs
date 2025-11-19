@@ -1,47 +1,287 @@
-<%- layout("layouts/boilerplate") %>
+<%- layout("layouts/boilerplate", { showFilters: true }) %>
 
-<br/>
-<div class="row">
-    <div class="col-12">
-        <h3>All Listings</h3>
-
-        <!-- Search and Filter Form -->
-        <form method="GET" action="/listings" class="mb-4 search-form">
-            <div class="row g-3">
-                <div class="col-md-4">
-                    <input type="text" name="search" class="form-control" placeholder="Search by title, location, or country" value="<%= typeof search !== 'undefined' ? search : '' %>">
-                </div>
-                <div class="col-md-2">
-                    <input type="number" name="minPrice" class="form-control" placeholder="Min Price" value="<%= typeof minPrice !== 'undefined' ? minPrice : '' %>">
-                </div>
-                <div class="col-md-2">
-                    <input type="number" name="maxPrice" class="form-control" placeholder="Max Price" value="<%= typeof maxPrice !== 'undefined' ? maxPrice : '' %>">
-                </div>
-                <div class="col-md-2">
-                    <button type="submit" class="btn btn-primary w-100">Search</button>
-                </div>
-                <div class="col-md-2">
-                    <a href="/listings" class="btn btn-secondary w-100">Clear Filters</a>
-                </div>
-            </div>
-        </form>
+<div class="container-fluid">
+    <!-- Header Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="mb-3">Find your perfect stay</h1>
+            <p class="text-muted">Discover amazing places to stay around the world</p>
+        </div>
     </div>
-</div>
 
-<div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
-    <% for (let listing of listings) { %>
-        <a href="/listings/<%=listing._id%>" class="listing-link">
-        <div class="card col listing-card" >
-            <img src="<%=listing.image%>" class="card-img-top" alt="listing image" style="height: 20rem;">
-            <div class="card-img-overlay">Listings</div>
-            <div class="card-body">
-              <p class="card-text">
-                <b><%=listing.title%></b> <br/>
-                &#8377; <%= listing.price.toLocaleString("en-IN") %>/night
-            </p>
+    <!-- Search Bar -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <form method="GET" action="/listings" class="search-form">
+                <div class="row g-3">
+                    <div class="col-lg-6 position-relative">
+                        <input type="text" name="search" id="search-input" class="form-control form-control-lg" placeholder="Where are you going?" value="<%= typeof search !== 'undefined' ? search : '' %>" autocomplete="off">
+                        <div id="autocomplete-results" class="autocomplete-results"></div>
+                    </div>
+                    <div class="col-lg-2">
+                        <input type="number" name="minPrice" class="form-control form-control-lg" placeholder="Min Price" value="<%= typeof minPrice !== 'undefined' ? minPrice : '' %>">
+                    </div>
+                    <div class="col-lg-2">
+                        <input type="number" name="maxPrice" class="form-control form-control-lg" placeholder="Max Price" value="<%= typeof maxPrice !== 'undefined' ? maxPrice : '' %>">
+                    </div>
+                    <div class="col-lg-2">
+                        <button type="submit" class="btn btn-primary btn-lg w-100">
+                            <i class="fas fa-search me-2"></i>Search
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Filter Sidebar -->
+        <div class="col-lg-3 mb-4">
+            <div class="card filter-sidebar">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0">Filters</h5>
+                        <a href="/listings" class="text-decoration-none small">Clear all</a>
+                    </div>
+
+                    <!-- Price Range -->
+                    <div class="filter-section mb-4">
+                        <h6 class="filter-title">Price range</h6>
+                        <div class="price-inputs">
+                            <div class="input-group mb-2">
+                                <span class="input-group-text">₹</span>
+                                <input type="number" class="form-control" placeholder="Minimum" name="minPrice" form="filter-form">
+                            </div>
+                            <div class="input-group">
+                                <span class="input-group-text">₹</span>
+                                <input type="number" class="form-control" placeholder="Maximum" name="maxPrice" form="filter-form">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Property Type -->
+                    <div class="filter-section mb-4">
+                        <h6 class="filter-title">Property type</h6>
+                        <div class="property-types">
+                            <label class="filter-checkbox">
+                                <input type="checkbox" name="type" value="apartment" form="filter-form">
+                                <span class="checkmark"></span>
+                                Apartments
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" name="type" value="house" form="filter-form">
+                                <span class="checkmark"></span>
+                                Houses
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" name="type" value="villa" form="filter-form">
+                                <span class="checkmark"></span>
+                                Villas
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" name="type" value="cabin" form="filter-form">
+                                <span class="checkmark"></span>
+                                Cabins
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Amenities -->
+                    <div class="filter-section mb-4">
+                        <h6 class="filter-title">Amenities</h6>
+                        <div class="amenities">
+                            <label class="filter-checkbox">
+                                <input type="checkbox" name="amenity" value="wifi" form="filter-form">
+                                <span class="checkmark"></span>
+                                WiFi
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" name="amenity" value="pool" form="filter-form">
+                                <span class="checkmark"></span>
+                                Pool
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" name="amenity" value="parking" form="filter-form">
+                                <span class="checkmark"></span>
+                                Free parking
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" name="amenity" value="kitchen" form="filter-form">
+                                <span class="checkmark"></span>
+                                Kitchen
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" name="amenity" value="aircon" form="filter-form">
+                                <span class="checkmark"></span>
+                                Air conditioning
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Premium & Featured -->
+                    <div class="filter-section mb-4">
+                        <h6 class="filter-title">Listing Type</h6>
+                        <div class="listing-types">
+                            <label class="filter-checkbox">
+                                <input type="checkbox" name="premium" value="true" form="filter-form" <%= premium === 'true' ? 'checked' : '' %>>
+                                <span class="checkmark"></span>
+                                Premium listings
+                            </label>
+                            <label class="filter-checkbox">
+                                <input type="checkbox" name="featured" value="true" form="filter-form" <%= featured === 'true' ? 'checked' : '' %>>
+                                <span class="checkmark"></span>
+                                Featured listings
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Rating -->
+                    <div class="filter-section mb-4">
+                        <h6 class="filter-title">Minimum rating</h6>
+                        <div class="rating-filter">
+                            <label class="filter-radio">
+                                <input type="radio" name="rating" value="4.5" form="filter-form">
+                                <span class="radiomark"></span>
+                                4.5+ stars
+                            </label>
+                            <label class="filter-radio">
+                                <input type="radio" name="rating" value="4.0" form="filter-form">
+                                <span class="radiomark"></span>
+                                4.0+ stars
+                            </label>
+                            <label class="filter-radio">
+                                <input type="radio" name="rating" value="3.5" form="filter-form">
+                                <span class="radiomark"></span>
+                                3.5+ stars
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Apply Filters Button -->
+                    <form id="filter-form" method="GET" action="/listings" class="d-none">
+                        <!-- Hidden inputs will be populated by JavaScript -->
+                    </form>
+                    <button type="submit" form="filter-form" class="btn btn-primary w-100">
+                        Apply Filters
+                    </button>
+                </div>
             </div>
         </div>
-    <% } %>
+
+        <!-- Listings Grid -->
+        <div class="col-lg-9">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <p class="text-muted mb-0"><%= listings.length %> stays</p>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="text-muted small">Sort by:</span>
+                    <select class="form-select form-select-sm" id="sort-select" style="width: auto;">
+                        <option value="recommended" <%= sort === 'recommended' ? 'selected' : '' %>>Recommended</option>
+                        <option value="featured" <%= sort === 'featured' ? 'selected' : '' %>>Featured</option>
+                        <option value="premium" <%= sort === 'premium' ? 'selected' : '' %>>Premium</option>
+                        <option value="price-low" <%= sort === 'price-low' ? 'selected' : '' %>>Price: Low to High</option>
+                        <option value="price-high" <%= sort === 'price-high' ? 'selected' : '' %>>Price: High to Low</option>
+                        <option value="rating" <%= sort === 'rating' ? 'selected' : '' %>>Rating</option>
+                        <option value="newest" <%= sort === 'newest' ? 'selected' : '' %>>Newest</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4" id="listings-grid">
+                <% for (let listing of listings) { %>
+                    <div class="col">
+                        <a href="/listings/<%=listing._id%>" class="listing-link">
+                            <div class="card listing-card h-100">
+                                <div class="position-relative">
+                                    <img data-src="<%=listing.image%>" class="card-img-top" alt="<%=listing.title%> - <%=listing.location%>, <%=listing.country%>" style="height: 250px;" loading="lazy" decoding="async">
+                                    <!-- Heart Icon for Wishlist Toggle -->
+                                    <% if (currUser) { %>
+                                        <button type="button" class="btn btn-link position-absolute top-0 end-0 m-2 p-0 wishlist-toggle"
+                                                data-listing-id="<%= listing._id %>"
+                                                data-is-favorited="<%= listing.isFavorited ? 'true' : 'false' %>"
+                                                style="z-index: 10;">
+                                            <i class="<%= listing.isFavorited ? 'fas' : 'far' %> fa-heart <%= listing.isFavorited ? 'text-danger' : 'text-white' %>" style="font-size: 1.5rem; text-shadow: 0 0 3px rgba(0,0,0,0.5);"></i>
+                                        </button>
+                                    <% } %>
+
+                                    <!-- Featured Ribbon -->
+                                    <% if (listing.isFeatured && new Date(listing.featuredExpiry) > new Date()) { %>
+                                        <div class="featured-ribbon">
+                                            <span>FEATURED</span>
+                                        </div>
+                                    <% } %>
+
+                                    <!-- Premium Badge -->
+                                    <% if (listing.premiumTier && new Date(listing.premiumExpiry) > new Date()) { %>
+                                        <div class="premium-badge">
+                                            <i class="fas fa-crown"></i>
+                                            <span><%= listing.premiumTier.toUpperCase() %></span>
+                                        </div>
+                                    <% } %>
+                                    <div class="card-img-overlay d-flex align-items-end">
+                                        <div class="w-100 p-3">
+                                            <div class="d-flex justify-content-between align-items-end">
+                                                <div>
+                                                    <h5 class="text-white mb-1 fw-bold"><%=listing.title%></h5>
+                                                    <p class="text-white-50 mb-0 small"><%=listing.location%></p>
+                                                </div>
+                                                <div class="text-end">
+                                                    <div class="bg-white bg-opacity-90 rounded-pill px-3 py-1">
+                                                        <span class="fw-bold text-dark">₹<%= listing.price.toLocaleString("en-IN") %></span>
+                                                        <small class="text-muted">/night</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-body d-flex flex-column">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <div class="flex-grow-1">
+                                            <h6 class="card-title mb-1"><%=listing.title%></h6>
+                                            <p class="card-text text-muted small mb-0"><%=listing.location%>, <%=listing.country%></p>
+                                        </div>
+                                    </div>
+                                    <div class="mt-auto">
+                                        <div class="d-flex align-items-center justify-content-between">
+                                            <div class="d-flex align-items-center">
+                                                <i class="fas fa-star text-warning me-1"></i>
+                                                <span class="small fw-medium">4.8</span>
+                                                <span class="text-muted small ms-1">(120)</span>
+                                            </div>
+                                            <small class="text-muted">2-4 guests</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+    <!-- Map Section -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <h3 class="mb-3">Explore Listings on Map</h3>
+            <div id="map" style="height: 500px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);"></div>
+        </div>
+    </div>
+
+    <!-- Listings Data for Map -->
+    <script>
+        window.listingsData = <%- JSON.stringify(listings.map(listing => ({
+            _id: listing._id,
+            title: listing.title,
+            location: listing.location,
+            country: listing.country,
+            price: listing.price,
+            image: listing.image,
+            geometry: listing.geometry,
+            isFeatured: listing.isFeatured,
+            premiumTier: listing.premiumTier
+        }))) %>;
+    </script>
 </div>
 
 <!-- Pagination -->

@@ -1,65 +1,605 @@
 <%- layout("layouts/boilerplate") %>
-<div class="row mt-3">
-  <div class="col-8 offset-3">
 
-<h3><%= listing.title %></h3>
-  </div>
-<div class="card col-6 offset-3 show-card listing-card">
-    <img src="<%= listing.image %>" class="card-img-top show-img" alt="...">
-    <div class="card-body">
-      <p class="card-text"><i><%= listing.owner.username %></i></p>
-      <p class="card-text"><%= listing.description %></p>
-      <p class="card-text"><%= listing.price.toLocaleString("en-IN") %></p>
-      <p class="card-text"><%= listing.location %></p>
-      <p class="card-text"><%= listing.country %></p>
+<div class="container-fluid">
+    <%- include("../includes/breadcrumb") %>
+    <div class="row">
+        <div class="col-lg-8">
+            <!-- Main Content -->
+            <div class="card show-card listing-card mb-4">
+                <div class="position-relative">
+                    <img src="<%= listing.image %>" class="card-img-top show-img" alt="<%-listing.title%> - <%-listing.location%>, <%-listing.country%>" loading="lazy" decoding="async" fetchpriority="high">
+
+                    <!-- Featured Ribbon -->
+                    <% if (listing.isFeatured && new Date(listing.featuredExpiry) > new Date()) { %>
+                        <div class="featured-ribbon">
+                            <span>FEATURED</span>
+                        </div>
+                    <% } %>
+
+                    <!-- Premium Badge -->
+                    <% if (listing.premiumTier && new Date(listing.premiumExpiry) > new Date()) { %>
+                        <div class="premium-badge">
+                            <i class="fas fa-crown"></i>
+                            <span><%= listing.premiumTier.toUpperCase() %></span>
+                        </div>
+                    <% } %>
+                </div>
+
+                <!-- Owner Info Section -->
+                <div class="listing-owner">
+                    <img src="https://via.placeholder.com/40x40?text=<%= listing.owner.username.charAt(0).toUpperCase() %>" alt="<%=listing.owner.username%>" class="listing-owner-avatar">
+                    <div class="listing-owner-info">
+                        <h6>Hosted by <%= listing.owner.username %></h6>
+                        <p>Joined in 2023 • 12 listings</p>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <h1 class="listing-title"><%= listing.title %></h1>
+
+                    <div class="listing-meta">
+                        <div class="listing-meta-item">
+                            <i class="fas fa-star text-warning"></i>
+                            <span class="fw-medium">4.8</span>
+                            <span class="text-muted">· 120 reviews</span>
+                        </div>
+                        <div class="listing-meta-item">
+                            <i class="fas fa-map-marker-alt text-muted"></i>
+                            <span><%= listing.location %>, <%= listing.country %></span>
+                        </div>
+                        <div class="listing-meta-item">
+                            <i class="fas fa-users text-muted"></i>
+                            <span>2-4 guests</span>
+                        </div>
+                    </div>
+
+                    <div class="listing-price mb-4">
+                        ₹<%= listing.price.toLocaleString("en-IN") %> <span class="text-muted fw-normal">night</span>
+                        <% if (currUser) { %>
+                            <button type="button" class="btn <%= isFavorited ? 'btn-danger' : 'btn-outline-danger' %> ms-3 wishlist-toggle" data-listing-id="<%= listing._id %>" data-is-favorited="<%= isFavorited ? 'true' : 'false' %>">
+                                <i class="<%= isFavorited ? 'fas' : 'far' %> fa-heart me-1"></i><%= isFavorited ? 'Remove from Wishlist' : 'Add to Wishlist' %>
+                            </button>
+                        <% } %>
+                    </div>
+
+                    <div class="listing-description">
+                        <h5 class="mb-3">About this place</h5>
+                        <p class="mb-4"><%= listing.description %></p>
+                    </div>
+
+                    <!-- Premium Upgrade Prompt for Owners -->
+                    <% if (currUser && currUser._id.equals(listing.owner._id) && (!listing.premiumTier || new Date(listing.premiumExpiry) <= new Date())) { %>
+                        <div class="premium-upgrade-prompt mb-4">
+                            <div class="alert alert-info border-0" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                                <div class="d-flex align-items-center">
+                                    <i class="fas fa-crown fa-2x me-3"></i>
+                                    <div class="flex-grow-1">
+                                        <h5 class="mb-1">Upgrade to Premium</h5>
+                                        <p class="mb-0">Get featured placement, premium badges, and reach more guests!</p>
+                                    </div>
+                                    <a href="/premium/upgrade/<%= listing._id %>" class="btn btn-light btn-lg">
+                                        <i class="fas fa-rocket me-2"></i>Upgrade Now
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    <% } %>
+
+                    <!-- Share Section -->
+                    <div class="share-section mb-4">
+                        <h5 class="mb-3">Share this listing</h5>
+                        <div class="share-buttons">
+                            <button class="share-btn facebook" data-platform="facebook" data-url="<%= shareUrls.facebook %>">
+                                <i class="fab fa-facebook-f"></i> Facebook
+                            </button>
+                            <button class="share-btn twitter" data-platform="twitter" data-url="<%= shareUrls.twitter %>">
+                                <i class="fab fa-twitter"></i> Twitter
+                            </button>
+                            <button class="share-btn whatsapp" data-platform="whatsapp" data-url="<%= shareUrls.whatsapp %>">
+                                <i class="fab fa-whatsapp"></i> WhatsApp
+                            </button>
+                            <button class="share-btn copy" data-platform="copy" data-url="<%= shareUrls.copy %>">
+                                <i class="fas fa-copy"></i> Copy Link
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="listing-location-map mb-4">
+                        <h5 class="mb-3">Location</h5>
+                        <div id="map" style="height: 300px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <!-- Booking Card -->
+            <div class="card sticky-top" style="top: 2rem;">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <span class="h4 mb-0">₹<%= listing.price.toLocaleString("en-IN") %></span>
+                            <span class="text-muted"> night</span>
+                        </div>
+                        <div class="text-end">
+                            <i class="fas fa-star text-warning"></i>
+                            <span class="fw-medium">4.8</span>
+                            <span class="text-muted"> · 120 reviews</span>
+                        </div>
+                    </div>
+
+                    <% if (currUser && !currUser._id.equals(listing.owner._id)) { %>
+                        <form action="/bookings/<%= listing._id %>" method="POST" id="bookingForm">
+                            <div class="border rounded p-3 mb-4">
+                                <div class="row g-2">
+                                    <div class="col-6">
+                                        <label class="form-label small fw-medium">Check-in</label>
+                                        <input type="text" id="checkIn" name="booking[checkIn]" class="form-control form-control-sm" placeholder="Select date" required>
+                                    </div>
+                                    <div class="col-6">
+                                        <label class="form-label small fw-medium">Check-out</label>
+                                        <input type="text" id="checkOut" name="booking[checkOut]" class="form-control form-control-sm" placeholder="Select date" required>
+                                    </div>
+                                </div>
+                                <div class="mt-2">
+                                    <label class="form-label small fw-medium">Guests</label>
+                                    <select name="booking[guests]" class="form-select form-select-sm" required>
+                                        <% for(let i = 1; i <= (listing.maxGuests || 4); i++) { %>
+                                            <option value="<%= i %>"><%= i %> guest<%= i > 1 ? 's' : '' %></option>
+                                        <% } %>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary w-100 mb-2" id="reserveBtn">Reserve</button>
+                            <p class="text-center text-muted small">You won't be charged yet</p>
+                        </form>
+                    <% } else if (currUser && currUser._id.equals(listing.owner._id)) { %>
+                        <div class="text-center p-3">
+                            <p class="text-muted">This is your listing</p>
+                        </div>
+                    <% } else { %>
+                        <div class="text-center p-3">
+                            <a href="/login" class="btn btn-primary w-100 mb-2">Login to Book</a>
+                            <p class="text-center text-muted small">You won't be charged yet</p>
+                        </div>
+                    <% } %>
+
+                    <!-- Contact Host Button -->
+                    <% if (currUser && !currUser._id.equals(listing.owner._id)) { %>
+                        <hr class="my-3">
+                        <div class="text-center">
+                            <button type="button" class="btn btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#contactHostModal">
+                                <i class="fas fa-envelope me-2"></i>Contact Host
+                            </button>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-
-  <% if (currUser && currUser._id.equals(listing.owner._id)){%>
-<div class="btns">
-  <a href="/listings/<%= listing._id %>/edit" class="btn btn-dark col-1 offset-3 edit-btn">Edit</a>
-
-<form method="POST" action="/listings/<%=listing._id%>?_method=DELETE">
-  <button class="btn btn-dark offset-5">Delete</button>
-  </form>
+    
+<!-- Contact Host Modal -->
+<% if (currUser && !currUser._id.equals(listing.owner._id)) { %>
+<div class="modal fade" id="contactHostModal" tabindex="-1" aria-labelledby="contactHostModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="contactHostModalLabel">Contact Host</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="/messages" method="POST">
+                <div class="modal-body">
+                    <input type="hidden" name="conversation[listingId]" value="<%= listing._id %>">
+                    <input type="hidden" name="conversation[recipientId]" value="<%= listing.owner._id %>">
+                    <div class="mb-3">
+                        <label for="initialMessage" class="form-label">Your Message</label>
+                        <textarea class="form-control" id="initialMessage" name="conversation[initialMessage]" rows="4" placeholder="Hi! I'm interested in your listing..." required maxlength="1000"></textarea>
+                        <div class="form-text">Maximum 1000 characters</div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Send Message</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 <% } %>
-<div class="col-8 offset-3">
-  <h3>Reviews</h3>
-  <form method="POST" action="/listings/<%=listing._id%>/reviews" novalidate class="needs-validation">
-    <div class="form-group">
-      <label for="comment" class="form-label">Comment</label>
-      <input type="text" class="form-control" id="comment" name="review[comment]" class="form-control" required>
-      <div class="invalid-feedback">
-        Please Enter a Comment!
-      </div>
-    </div>
-    <div class="form-group">
-      <label for="rating" class="form-label">Rating</label>
-      <input type="number" min="1" max="5" class="form-control" id="rating" name="review[rating]" class="form-control" required>
-      <div class="invalid-feedback">
-        Please give a Rating!
-      </div>
-    </div>
-    <br>
-    <button type="submit" class="btn btn-primary">Submit</button>
-  </form>
-  <hr/>
+         
+         <% if (listing.geometry && listing.geometry.coordinates && listing.geometry.coordinates.length >= 2) { %>
+         <% const mapData = {lat: Number(listing.geometry.coordinates[1]), lng: Number(listing.geometry.coordinates[0]), title: listing.title, location: listing.location, country: listing.country}; %>
+         <script>
+             const data = JSON.parse('<%= JSON.stringify(mapData) %>');
+             const mapLat = data.lat;
+             const mapLng = data.lng;
+             console.log('mapLat:', mapLat, 'mapLng:', mapLng);
+             const popupContent = `<b>${data.title}</b><br>${data.location}, ${data.country}`;
+             const map = L.map('map').setView([mapLat, mapLng], 13);
 
-  <p><b>All Reviews</b></p>
-  <div class="row">
-  <% for(review of listing.reviews){ %>
-    <div class="card col-5 ms-3 mb-3">
-      <div class="card-body">
-        <h5 class="card-title">John Doe</h5>
-        <p class="card-text"><%= review.comment %></p>
-        <p class="card-text"><%= review.rating%> stars</p>
-      </div>
-      <form class="mb-3" method="POST" action="/listings/<%=listing._id%>/reviews/<%=review._id%>?_method=DELETE">
-        <button class="btn btn-sm btn-dark">Delete</button>
-      </form>
+             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+               attribution: '© OpenStreetMap contributors'
+             }).addTo(map);
+
+             L.marker([mapLat, mapLng]).addTo(map)
+               .bindPopup(popupContent).openPopup();
+         </script>
+         <% } %>
+
+         <!-- Flatpickr CSS and JS -->
+         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+         <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+         <script>
+           // Initialize Flatpickr for booking dates
+           document.addEventListener('DOMContentLoaded', function() {
+               const checkInInput = document.getElementById('checkIn');
+               const checkOutInput = document.getElementById('checkOut');
+
+               if (checkInInput && checkOutInput) {
+                   // Fetch unavailable dates from API
+                   fetch(`/bookings/api/availability/<%= listing._id %>`)
+                       .then(response => response.json())
+                       .then(data => {
+                           const unavailableDates = data.unavailableDates.map(date => new Date(date));
+
+                           // Initialize check-in date picker
+                           const checkInPicker = flatpickr(checkInInput, {
+                               dateFormat: "Y-m-d",
+                               minDate: "today",
+                               disable: unavailableDates,
+                               onChange: function(selectedDates, dateStr, instance) {
+                                   // Set minimum date for check-out to be the day after check-in
+                                   if (selectedDates[0]) {
+                                       checkOutPicker.set('minDate', new Date(selectedDates[0].getTime() + 24 * 60 * 60 * 1000));
+                                   }
+                               }
+                           });
+
+                           // Initialize check-out date picker
+                           const checkOutPicker = flatpickr(checkOutInput, {
+                               dateFormat: "Y-m-d",
+                               minDate: "today",
+                               disable: unavailableDates
+                           });
+                       })
+                       .catch(error => {
+                           console.error('Error fetching availability:', error);
+                           // Fallback to basic date pickers
+                           flatpickr(checkInInput, {
+                               dateFormat: "Y-m-d",
+                               minDate: "today"
+                           });
+                           flatpickr(checkOutInput, {
+                               dateFormat: "Y-m-d",
+                               minDate: "today"
+                           });
+                       });
+               }
+           });
+         </script>
+
+   <!-- Reviews Section -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="mb-4">Reviews</h3>
+
+                    <!-- Add Review Form -->
+                    <% if (currUser && userBookings && userBookings.length > 0) { %>
+                    <form method="POST" action="/listings/<%=listing._id%>/reviews" enctype="multipart/form-data" novalidate class="needs-validation mb-5">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="mb-3">
+                                    <label for="booking" class="form-label fw-medium">Select your booking</label>
+                                    <select class="form-select" id="booking" name="review[booking]" required>
+                                        <option value="">Choose booking to review</option>
+                                        <% userBookings.forEach(booking => { %>
+                                            <option value="<%= booking._id %>">
+                                                <%= new Date(booking.checkIn).toLocaleDateString() %> - <%= new Date(booking.checkOut).toLocaleDateString() %>
+                                                (<%= booking.guests %> guest<%= booking.guests > 1 ? 's' : '' %>)
+                                            </option>
+                                        <% }); %>
+                                    </select>
+                                    <div class="invalid-feedback">Please select a booking!</div>
+                                </div>
+
+                                <div class="mb-4">
+                                    <h5 class="fw-medium mb-3">Rate your experience</h5>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label">Cleanliness</label>
+                                                <div class="star-rating" data-category="cleanliness">
+                                                    <% for(let i = 5; i >= 1; i--) { %>
+                                                        <input type="radio" id="cleanliness-<%=i%>" name="review[detailedRatings][cleanliness]" value="<%=i%>" required>
+                                                        <label for="cleanliness-<%=i%>">☆</label>
+                                                    <% } %>
+                                               </div>
+                                           </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Accuracy</label>
+                                                <div class="star-rating" data-category="accuracy">
+                                                    <% for(let i = 5; i >= 1; i--) { %>
+                                                        <input type="radio" id="accuracy-<%=i%>" name="review[detailedRatings][accuracy]" value="<%=i%>" required>
+                                                        <label for="accuracy-<%=i%>">☆</label>
+                                                    <% } %>
+                                               </div>
+                                           </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Communication</label>
+                                                <div class="star-rating" data-category="communication">
+                                                    <% for(let i = 5; i >= 1; i--) { %>
+                                                        <input type="radio" id="communication-<%=i%>" name="review[detailedRatings][communication]" value="<%=i%>" required>
+                                                        <label for="communication-<%=i%>">☆</label>
+                                                    <% } %>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label class="form-label">Location</label>
+                                                <div class="star-rating" data-category="location">
+                                                    <% for(let i = 5; i >= 1; i--) { %>
+                                                        <input type="radio" id="location-<%=i%>" name="review[detailedRatings][location]" value="<%=i%>" required>
+                                                        <label for="location-<%=i%>">☆</label>
+                                                    <% } %>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Check-in</label>
+                                                <div class="star-rating" data-category="checkIn">
+                                                    <% for(let i = 5; i >= 1; i--) { %>
+                                                        <input type="radio" id="checkIn-<%=i%>" name="review[detailedRatings][checkIn]" value="<%=i%>" required>
+                                                        <label for="checkIn-<%=i%>">☆</label>
+                                                    <% } %>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Value</label>
+                                                <div class="star-rating" data-category="value">
+                                                    <% for(let i = 5; i >= 1; i--) { %>
+                                                        <input type="radio" id="value-<%=i%>" name="review[detailedRatings][value]" value="<%=i%>" required>
+                                                        <label for="value-<%=i%>">☆</label>
+                                                    <% } %>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="comment" class="form-label fw-medium">Share your experience</label>
+                                    <textarea class="form-control" id="comment" name="review[comment]" rows="4" placeholder="Tell others about your stay..." required></textarea>
+                                    <div class="invalid-feedback">Please share your experience!</div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="photos" class="form-label fw-medium">Add photos (optional)</label>
+                                    <input type="file" class="form-control" id="photos" name="photos" multiple accept="image/*">
+                                    <div class="form-text">You can upload up to 5 photos. Maximum 5MB each.</div>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary">Submit Review</button>
+                            </div>
+                        </div>
+                    </form>
+                    <% } else if (currUser) { %>
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            You need to complete a booking at this listing before you can leave a review.
+                        </div>
+                    <% } %>
+
+                    <!-- Rating Breakdown -->
+                    <% if (listing.reviews && listing.reviews.length > 0) { %>
+                        <div class="rating-breakdown mb-4">
+                            <h5 class="mb-3">Rating Breakdown</h5>
+                            <%
+                            const avgRatings = {};
+                            const categories = ['cleanliness', 'accuracy', 'communication', 'location', 'checkIn', 'value'];
+                            categories.forEach(cat => {
+                              const ratings = listing.reviews.filter(r => r.detailedRatings && r.detailedRatings[cat]).map(r => Number(r.detailedRatings[cat]) || 0);
+                              const sum = ratings.reduce((a, b) => a + b, 0);
+                              const avg = ratings.length > 0 ? sum / ratings.length : 0;
+                              avgRatings[cat] = avg;
+                            });
+                            %>
+                            <% categories.forEach(cat => { %>
+                            <% const widthPercent = Math.round((avgRatings[cat] / 5) * 100) + '%'; %>
+                            <div class="rating-category">
+                              <span class="text-capitalize"><%= cat %></span>
+                              <div class="rating-bar">
+                                <div class="rating-fill" style="width: <%= widthPercent %>"></div>
+                              </div>
+                              <span class="fw-medium"><%= avgRatings[cat].toFixed(1) %></span>
+                            </div>
+                            <% }); %>
+                        </div>
+                    <% } %>
+
+                    <!-- Reviews List -->
+                    <div class="reviews-list">
+                        <% for(let review of listing.reviews) { %>
+                            <div class="review-item border-bottom py-4">
+                                <div class="d-flex align-items-start">
+                                    <img src="https://via.placeholder.com/48x48?text=U" alt="User avatar" class="rounded-circle me-3" style="width: 48px; height: 48px;">
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex justify-content-between align-items-start mb-2">
+                                            <div>
+                                                <h6 class="mb-1">
+                                                    Anonymous User
+                                                    <% if (review.verified) { %>
+                                                        <span class="verification-badge ms-2">
+                                                            <i class="fas fa-check-circle"></i> Verified
+                                                        </span>
+                                                    <% } %>
+                                                </h6>
+                                                <div class="text-muted small">
+                                                    <%= new Date(review.createdAt).toLocaleDateString('en-US', { month: 'long', year: 'numeric' }) %>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex align-items-center gap-2">
+                                                <% if (review.detailedRatings) { %>
+                                                    <div class="text-muted small">
+                                                        <% const avgRating = Object.values(review.detailedRatings).reduce((a,b) => a+b, 0) / Object.values(review.detailedRatings).length; %>
+                                                        <%= avgRating.toFixed(1) %>/5
+                                                    </div>
+                                                <% } %>
+                                                <% for(let i = 0; i < (review.rating || 5); i++) { %>
+                                                    <i class="fas fa-star text-warning"></i>
+                                                <% } %>
+                                                <% for(let i = (review.rating || 5); i < 5; i++) { %>
+                                                    <i class="far fa-star text-warning"></i>
+                                                <% } %>
+                                            </div>
+                                        </div>
+
+                                        <% if (review.detailedRatings) { %>
+                                            <div class="mb-2">
+                                                <small class="text-muted">
+                                                    Cleanliness: <%= review.detailedRatings.cleanliness %> |
+                                                    Accuracy: <%= review.detailedRatings.accuracy %> |
+                                                    Communication: <%= review.detailedRatings.communication %> |
+                                                    Location: <%= review.detailedRatings.location %> |
+                                                    Check-in: <%= review.detailedRatings.checkIn %> |
+                                                    Value: <%= review.detailedRatings.value %>
+                                                </small>
+                                            </div>
+                                        <% } %>
+
+                                        <p class="mb-2"><%= review.comment %></p>
+
+                                        <% if (review.photos && review.photos.length > 0) { %>
+                                            <div class="review-photos mb-2">
+                                                <% review.photos.forEach(photo => { %>
+                                                    <img src="<%= photo %>" alt="Review photo" class="review-photo" onclick="window.open(this.src)">
+                                                <% }); %>
+                                            </div>
+                                        <% } %>
+
+                                        <% if (review.hostResponse) { %>
+                                            <div class="host-response">
+                                                <strong>Host Response:</strong>
+                                                <p class="mb-1"><%= review.hostResponse.response %></p>
+                                                <small class="text-muted">
+                                                    Responded <%= new Date(review.hostResponse.respondedAt).toLocaleDateString() %>
+                                                </small>
+                                            </div>
+                                        <% } %>
+
+                                        <div class="d-flex gap-2 mt-2">
+                                            <% if (currUser && !currUser._id.equals(review.author._id)) { %>
+                                                <form method="POST" action="/listings/<%=listing._id%>/reviews/<%=review._id%>/report" class="d-inline">
+                                                    <button type="submit" class="btn btn-sm btn-outline-warning">Report</button>
+                                                </form>
+                                            <% } %>
+                                            <% if (currUser && currUser._id.equals(listing.owner._id) && !review.hostResponse) { %>
+                                                <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#responseModal<%=review._id%>">
+                                                    Respond
+                                                </button>
+                                            <% } %>
+                                            <% if (currUser && currUser._id.equals(review.author._id)) { %>
+                                                <form method="POST" action="/listings/<%=listing._id%>/reviews/<%=review._id%>?_method=DELETE" class="d-inline">
+                                                    <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                                                </form>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Response Modal -->
+                                <% if (currUser && currUser._id.equals(listing.owner._id)) { %>
+                                <div class="modal fade" id="responseModal<%=review._id%>" tabindex="-1">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Respond to Review</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <form method="POST" action="/listings/<%=listing._id%>/reviews/<%=review._id%>/response">
+                                                <div class="modal-body">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Your Response</label>
+                                                        <textarea class="form-control" name="response" rows="4" required></textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                    <button type="submit" class="btn btn-primary">Send Response</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <% } %>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-  <% } %>
-  </div>
+
+    <!-- Comments Section -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h3 class="mb-4">Comments</h3>
+
+                    <!-- Add Comment Form -->
+                    <% if (currUser) { %>
+                    <form id="commentForm" class="mb-4">
+                        <div class="mb-3">
+                            <label for="commentContent" class="form-label fw-medium">Share your thoughts</label>
+                            <textarea class="form-control" id="commentContent" rows="3" placeholder="Write a comment..." maxlength="1000" required></textarea>
+                            <div class="form-text">Maximum 1000 characters</div>
+                        </div>
+                        <button type="submit" class="btn btn-primary" id="submitComment">Post Comment</button>
+                    </form>
+                    <% } else { %>
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <a href="/login">Login</a> to join the conversation.
+                        </div>
+                    <% } %>
+
+                    <!-- Comments List -->
+                    <div id="commentsList" class="comments-list">
+                        <!-- Comments will be loaded here via AJAX -->
+                    </div>
+
+                    <!-- Load More Button -->
+                    <div class="text-center mt-4" id="loadMoreContainer" style="display: none;">
+                        <button id="loadMoreComments" class="btn btn-outline-primary">Load More Comments</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit/Delete Buttons for Owner -->
+    <% if (currUser && currUser._id.equals(listing.owner._id)) { %>
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="/listings/<%= listing._id %>/edit" class="btn btn-outline-primary">
+                        <i class="fas fa-edit me-2"></i>Edit Listing
+                    </a>
+                    <form method="POST" action="/listings/<%=listing._id%>?_method=DELETE" class="d-inline"
+                          onsubmit="return confirm('Are you sure you want to delete this listing?')">
+                        <button type="submit" class="btn btn-outline-danger">
+                            <i class="fas fa-trash me-2"></i>Delete Listing
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    <% } %>
 </div>
 </div>
+<script src="/js/share.js"></script>
+<script src="/js/comments.js"></script>

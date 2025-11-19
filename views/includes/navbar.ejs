@@ -1,26 +1,132 @@
-<nav class="navbar navbar-expand-md bg-body-tertiary border-bottom sticky-top">
+<nav class="navbar navbar-expand-lg border-bottom sticky-top" role="navigation" aria-label="Main navigation" id="navigation">
     <div class="container-fluid">
-      <a class="navbar-brand" href="/"><i class="fa-regular fa-compass"></i></a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+      <a class="navbar-brand d-flex align-items-center" href="/" aria-label="Heavenly - Home">
+        <img src="/logo1.png" alt="Heavenly Logo" class="me-2" style="height: 1.5rem;" aria-hidden="true">
+        <span class="fw-bold">Heavenly</span>
+      </a>
+
+      <!-- Mobile Filter Toggle (only on listings page) -->
+      <% if (typeof showFilters !== 'undefined' && showFilters) { %>
+        <button class="btn btn-outline-primary d-lg-none me-2" type="button" data-bs-toggle="offcanvas" data-bs-target="#mobileFilters" aria-controls="mobileFilters" aria-label="Open filters">
+          <i class="fas fa-filter me-1" aria-hidden="true"></i>
+          Filters
+        </button>
+      <% } %>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle main menu">
         <span class="navbar-toggler-icon"></span>
       </button>
+
       <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-        <div class="navbar-nav">
-          <a class="nav-link" href="/">Home</a>
-          <a class="nav-link" href="/listings">All Listings</a>
+        <ul class="navbar-nav me-auto" role="menubar">
+          <li class="nav-item" role="none">
+            <a class="nav-link" href="/" role="menuitem">Home</a>
+          </li>
+          <li class="nav-item" role="none">
+            <a class="nav-link" href="/listings" role="menuitem">All Listings</a>
+          </li>
           <% if(currUser){%>
-          <a class="nav-link" href="/listings/new">Add New Listing</a>
+          <li class="nav-item" role="none">
+            <a class="nav-link" href="/listings/new" role="menuitem">Add New Listing</a>
+          </li>
           <% } %>
-        </div>
-        <div class="navbar-nav ms-auto">
-          <% if(!currUser){%>
-          <a class="nav-link" href="/signup">Sign Up</a>
-          <a class="nav-link" href="/login">Log In</a>
-          <% } %>
-          <% if(currUser){%>
-          <a class="nav-link" href="/logout">Log Out</a>
-        <% } %>
-        </div>
+        </ul>
+
+        <ul class="navbar-nav" role="menubar">
+           <!-- Theme Toggle Button -->
+           <li class="nav-item" role="none">
+             <button class="nav-link" id="theme-toggle" type="button" aria-label="Toggle theme" title="Toggle between light and dark mode">
+               <i class="fas fa-sun" aria-hidden="true"></i>
+               <i class="fas fa-moon" aria-hidden="true"></i>
+               <span class="d-none d-md-inline ms-1 theme-text"></span>
+             </button>
+           </li>
+
+           <% if(!currUser){%>
+           <li class="nav-item" role="none">
+             <a class="nav-link" href="/signup" role="menuitem">Sign Up</a>
+           </li>
+           <li class="nav-item" role="none">
+             <a class="nav-link" href="/login" role="menuitem">Log In</a>
+           </li>
+           <% } %>
+           <% if(currUser){%>
+           <!-- Notifications Dropdown -->
+           <li class="nav-item dropdown" role="none">
+             <a class="nav-link position-relative" href="#" id="notificationsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Notifications">
+               <i class="fas fa-bell" aria-hidden="true"></i>
+               <span id="notificationBadge" class="badge bg-danger position-absolute top-0 start-100 translate-middle d-none" style="font-size: 0.6rem;">0</span>
+             </a>
+             <ul class="dropdown-menu dropdown-menu-end notification-dropdown" aria-labelledby="notificationsDropdown" role="menu" style="min-width: 300px; max-height: 400px; overflow-y: auto;">
+               <li role="none">
+                 <h6 class="dropdown-header d-flex justify-content-between align-items-center">
+                   Notifications
+                   <a href="/notifications" class="btn btn-sm btn-outline-primary">View All</a>
+                 </h6>
+               </li>
+               <li role="none"><hr class="dropdown-divider"></li>
+               <li role="none">
+                 <div id="notificationList" class="px-2">
+                   <!-- Notifications will be loaded here -->
+                   <div class="text-center py-3">
+                     <div class="spinner-border spinner-border-sm" role="status">
+                       <span class="visually-hidden">Loading...</span>
+                     </div>
+                     <div class="mt-2 text-muted small">Loading notifications...</div>
+                   </div>
+                 </div>
+               </li>
+               <li role="none">
+                 <div id="noNotifications" class="text-center py-3 d-none">
+                   <i class="fas fa-bell-slash fa-2x text-muted mb-2" aria-hidden="true"></i>
+                   <div class="text-muted small">No new notifications</div>
+                 </div>
+               </li>
+             </ul>
+           </li>
+           <li class="nav-item dropdown" role="none">
+             <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="menuitem" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true" aria-label="User menu">
+               <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px; font-size: 0.875rem; font-weight: 600;" aria-hidden="true">
+                 <%= currUser.username.charAt(0).toUpperCase() %>
+               </div>
+               <span class="d-none d-md-inline"><%= currUser.username %></span>
+             </a>
+             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown" role="menu">
+               <li role="none"><a class="dropdown-item d-flex justify-content-between align-items-center" href="/messages" role="menuitem">
+                 Messages
+                 <span id="unreadBadge" class="badge bg-danger ms-2 d-none">0</span>
+               </a></li>
+               <li role="none"><a class="dropdown-item" href="/activities/feed" role="menuitem">Activity Feed</a></li>
+               <li role="none"><a class="dropdown-item" href="/wishlists" role="menuitem">My Wishlists</a></li>
+               <li role="none"><a class="dropdown-item" href="/bookings" role="menuitem">My Bookings</a></li>
+               <li role="none"><a class="dropdown-item" href="/profile" role="menuitem">Profile</a></li>
+               <li role="none"><a class="dropdown-item" href="/listings/new" role="menuitem">Add Listing</a></li>
+               <li role="none"><hr class="dropdown-divider"></li>
+               <li role="none"><a class="dropdown-item" href="/logout" role="menuitem">Log Out</a></li>
+             </ul>
+           </li>
+         <% } %>
+         </ul>
       </div>
     </div>
   </nav>
+
+  <!-- Mobile Filters Offcanvas -->
+  <% if (typeof showFilters !== 'undefined' && showFilters) { %>
+  <div class="offcanvas offcanvas-start d-lg-none" tabindex="-1" id="mobileFilters" aria-labelledby="mobileFiltersLabel">
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="mobileFiltersLabel">Filters</h5>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+      <div class="filter-sidebar">
+        <div class="card-body p-0">
+          <!-- Mobile filter content will be populated by JavaScript -->
+          <div id="mobile-filter-content">
+            <!-- Content will be cloned from desktop filters -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <% } %>

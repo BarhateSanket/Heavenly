@@ -1,0 +1,104 @@
+<%- layout("layouts/boilerplate") %>
+
+<div class="container-fluid">
+    <%- include("../includes/breadcrumb") %>
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1>Review Moderation</h1>
+                <a href="/admin" class="btn btn-secondary">Back to Dashboard</a>
+            </div>
+
+            <% if (reviews.length === 0) { %>
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    No reported reviews to moderate at this time.
+                </div>
+            <% } else { %>
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title mb-4">Reported Reviews (<%= reviews.length %>)</h5>
+
+                        <% reviews.forEach(review => { %>
+                            <div class="review-moderation-item border-bottom py-4">
+                                <div class="row">
+                                    <div class="col-md-8">
+                                        <div class="d-flex align-items-start">
+                                            <img src="https://via.placeholder.com/48x48?text=U" alt="User avatar" class="rounded-circle me-3" style="width: 48px; height: 48px;">
+                                            <div class="flex-grow-1">
+                                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                                    <div>
+                                                        <h6 class="mb-1">
+                                                            <%= review.author ? review.author.username : 'Anonymous' %>
+                                                            <% if (review.verified) { %>
+                                                                <span class="verification-badge ms-2">
+                                                                    <i class="fas fa-check-circle"></i> Verified
+                                                                </span>
+                                                            <% } %>
+                                                        </h6>
+                                                        <div class="text-muted small">
+                                                            <%= new Date(review.createdAt).toLocaleDateString() %>
+                                                            • <%= review.listing ? review.listing.title : 'Unknown Listing' %>
+                                                        </div>
+                                                    </div>
+                                                    <div class="d-flex align-items-center">
+                                                        <% for(let i = 0; i < (review.rating || 5); i++) { %>
+                                                            <i class="fas fa-star text-warning"></i>
+                                                        <% } %>
+                                                        <% for(let i = (review.rating || 5); i < 5; i++) { %>
+                                                            <i class="far fa-star text-warning"></i>
+                                                        <% } %>
+                                                    </div>
+                                                </div>
+
+                                                <p class="mb-2"><%= review.comment %></p>
+
+                                                <% if (review.photos && review.photos.length > 0) { %>
+                                                    <div class="review-photos mb-2">
+                                                        <% review.photos.forEach(photo => { %>
+                                                            <img src="<%= photo %>" alt="Review photo" class="review-photo" onclick="window.open(this.src)">
+                                                        <% }); %>
+                                                    </div>
+                                                <% } %>
+
+                                                <div class="reports-info mt-3">
+                                                    <h6 class="text-danger">Reports (<%= review.reports.length %>):</h6>
+                                                    <% review.reports.forEach(report => { %>
+                                                        <div class="report-item bg-light p-2 rounded mb-1">
+                                                            <small>
+                                                                <strong><%= report.reportedBy ? report.reportedBy.username : 'Anonymous' %></strong>
+                                                                reported on <%= new Date(report.reportedAt).toLocaleDateString() %>:
+                                                                <em><%= report.reason %></em>
+                                                            </small>
+                                                        </div>
+                                                    <% }); %>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="d-flex flex-column gap-2">
+                                            <form method="POST" action="/admin/reviews/<%= review._id %>?_method=PUT" class="d-inline">
+                                                <input type="hidden" name="action" value="approve">
+                                                <button type="submit" class="btn btn-success w-100 mb-2">
+                                                    <i class="fas fa-check me-2"></i>Approve & Clear Reports
+                                                </button>
+                                            </form>
+                                            <form method="POST" action="/admin/reviews/<%= review._id %>?_method=PUT" class="d-inline"
+                                                  onsubmit="return confirm('Are you sure you want to remove this review? This action cannot be undone.')">
+                                                <input type="hidden" name="action" value="remove">
+                                                <button type="submit" class="btn btn-danger w-100">
+                                                    <i class="fas fa-trash me-2"></i>Remove Review
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        <% }); %>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</div>
