@@ -1,1 +1,0 @@
-- [x] Remove the "Explore Listings on Map" section from views/listings/index.ejs
