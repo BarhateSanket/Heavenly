@@ -1,0 +1,456 @@
+<% layout("layouts/boilerplate") %>
+
+<div class="container-fluid py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <!-- Header -->
+            <div class="text-center mb-5">
+                <h1 class="display-4 fw-bold mb-3">Help Center</h1>
+                <p class="lead text-muted">Comprehensive guides and resources to help you make the most of Heavenly</p>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="row mb-5">
+                <div class="col-12">
+                    <div class="row row-cols-1 row-cols-md-3 g-4">
+                        <div class="col">
+                            <div class="card h-100 shadow-sm text-center">
+                                <div class="card-body py-4">
+                                    <i class="fas fa-search fa-3x text-primary mb-3"></i>
+                                    <h5 class="card-title">Browse Topics</h5>
+                                    <p class="card-text">Find answers to common questions</p>
+                                    <a href="#topics" class="btn btn-primary">Browse Topics</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card h-100 shadow-sm text-center">
+                                <div class="card-body py-4">
+                                    <i class="fas fa-headset fa-3x text-success mb-3"></i>
+                                    <h5 class="card-title">Contact Support</h5>
+                                    <p class="card-text">Get help from our support team</p>
+                                    <a href="/contact" class="btn btn-success">Contact Us</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card h-100 shadow-sm text-center">
+                                <div class="card-body py-4">
+                                    <i class="fas fa-video fa-3x text-info mb-3"></i>
+                                    <h5 class="card-title">Video Tutorials</h5>
+                                    <p class="card-text">Watch step-by-step guides</p>
+                                    <a href="#videos" class="btn btn-info">Watch Videos</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="row justify-content-center mb-5">
+                <div class="col-md-8">
+                    <div class="input-group input-group-lg">
+                        <input type="text" class="form-control" id="helpSearch" placeholder="Search help articles...">
+                        <button class="btn btn-primary" type="button">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Popular Topics -->
+            <div id="topics" class="row mb-5">
+                <div class="col-12">
+                    <h2 class="h3 mb-4">Popular Topics</h2>
+                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                        <div class="col">
+                            <div class="card h-100 shadow-sm help-topic">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <i class="fas fa-user-plus fa-2x text-primary me-3"></i>
+                                        <h5 class="card-title mb-0">Getting Started</h5>
+                                    </div>
+                                    <p class="card-text">Learn how to create your account and start using Heavenly.</p>
+                                    <a href="#getting-started-guide" class="btn btn-outline-primary btn-sm">Read Guide</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card h-100 shadow-sm help-topic">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <i class="fas fa-calendar-check fa-2x text-success me-3"></i>
+                                        <h5 class="card-title mb-0">Making Bookings</h5>
+                                    </div>
+                                    <p class="card-text">Step-by-step guide to finding and booking your perfect stay.</p>
+                                    <a href="#booking-guide" class="btn btn-outline-success btn-sm">Read Guide</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card h-100 shadow-sm help-topic">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <i class="fas fa-home fa-2x text-info me-3"></i>
+                                        <h5 class="card-title mb-0">Hosting Guide</h5>
+                                    </div>
+                                    <p class="card-text">Everything you need to know about becoming a successful host.</p>
+                                    <a href="#hosting-guide" class="btn btn-outline-info btn-sm">Read Guide</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card h-100 shadow-sm help-topic">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <i class="fas fa-credit-card fa-2x text-warning me-3"></i>
+                                        <h5 class="card-title mb-0">Payments & Payouts</h5>
+                                    </div>
+                                    <p class="card-text">Understanding payments, refunds, and how to get paid.</p>
+                                    <a href="#payment-guide" class="btn btn-outline-warning btn-sm">Read Guide</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card h-100 shadow-sm help-topic">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <i class="fas fa-shield-alt fa-2x text-danger me-3"></i>
+                                        <h5 class="card-title mb-0">Safety & Security</h5>
+                                    </div>
+                                    <p class="card-text">Tips for staying safe and secure on Heavenly.</p>
+                                    <a href="#safety-guide" class="btn btn-outline-danger btn-sm">Read Guide</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card h-100 shadow-sm help-topic">
+                                <div class="card-body">
+                                    <div class="d-flex align-items-center mb-3">
+                                        <i class="fas fa-mobile-alt fa-2x text-secondary me-3"></i>
+                                        <h5 class="card-title mb-0">Mobile App</h5>
+                                    </div>
+                                    <p class="card-text">Using Heavenly on your mobile device.</p>
+                                    <a href="#mobile-guide" class="btn btn-outline-secondary btn-sm">Read Guide</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Guides -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="accordion" id="helpGuides">
+
+                        <!-- Getting Started Guide -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="getting-started-guide">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#gettingStartedContent">
+                                    <i class="fas fa-user-plus me-2"></i>Getting Started with Heavenly
+                                </button>
+                            </h2>
+                            <div id="gettingStartedContent" class="accordion-collapse collapse show" data-bs-parent="#helpGuides">
+                                <div class="accordion-body">
+                                    <h4>Creating Your Account</h4>
+                                    <ol>
+                                        <li>Visit heavenly.com and click "Sign Up"</li>
+                                        <li>Enter your email address and create a strong password</li>
+                                        <li>Verify your email by clicking the link in your inbox</li>
+                                        <li>Complete your profile with a photo and basic information</li>
+                                    </ol>
+
+                                    <h4>Setting Up Your Profile</h4>
+                                    <ul>
+                                        <li>Add a profile picture to build trust</li>
+                                        <li>Write a brief bio about yourself</li>
+                                        <li>Verify your identity for enhanced security</li>
+                                        <li>Connect your payment methods</li>
+                                    </ul>
+
+                                    <h4>Navigation Tips</h4>
+                                    <ul>
+                                        <li>Use the search bar to find destinations</li>
+                                        <li>Filter results by price, amenities, and more</li>
+                                        <li>Save favorite listings to your wishlist</li>
+                                        <li>Check your messages regularly for booking updates</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Booking Guide -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="booking-guide">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#bookingContent">
+                                    <i class="fas fa-calendar-check me-2"></i>How to Book Your Stay
+                                </button>
+                            </h2>
+                            <div id="bookingContent" class="accordion-collapse collapse" data-bs-parent="#helpGuides">
+                                <div class="accordion-body">
+                                    <h4>Finding the Perfect Listing</h4>
+                                    <ol>
+                                        <li>Use the search bar to enter your destination</li>
+                                        <li>Select your check-in and check-out dates</li>
+                                        <li>Adjust filters for price, amenities, and property type</li>
+                                        <li>Read reviews and check host response rates</li>
+                                    </ol>
+
+                                    <h4>Making a Booking</h4>
+                                    <ol>
+                                        <li>Click on a listing that interests you</li>
+                                        <li>Select your dates and number of guests</li>
+                                        <li>Review the pricing breakdown and cancellation policy</li>
+                                        <li>Enter your payment information securely</li>
+                                        <li>Confirm your booking</li>
+                                    </ol>
+
+                                    <h4>After Booking</h4>
+                                    <ul>
+                                        <li>Message your host with any questions</li>
+                                        <li>Review check-in instructions</li>
+                                        <li>Keep an eye on your email for updates</li>
+                                        <li>Leave a review after your stay</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Hosting Guide -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="hosting-guide">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#hostingContent">
+                                    <i class="fas fa-home me-2"></i>Becoming a Successful Host
+                                </button>
+                            </h2>
+                            <div id="hostingContent" class="accordion-collapse collapse" data-bs-parent="#helpGuides">
+                                <div class="accordion-body">
+                                    <h4>Creating Your Listing</h4>
+                                    <ol>
+                                        <li>Take high-quality photos of your property</li>
+                                        <li>Write a detailed, accurate description</li>
+                                        <li>Set competitive pricing based on local rates</li>
+                                        <li>Choose appropriate availability and booking settings</li>
+                                    </ol>
+
+                                    <h4>Host Responsibilities</h4>
+                                    <ul>
+                                        <li>Respond to inquiries within 24 hours</li>
+                                        <li>Keep your calendar up to date</li>
+                                        <li>Maintain your property in excellent condition</li>
+                                        <li>Follow local laws and regulations</li>
+                                    </ul>
+
+                                    <h4>Managing Bookings</h4>
+                                    <ul>
+                                        <li>Confirm bookings promptly</li>
+                                        <li>Provide clear check-in instructions</li>
+                                        <li>Be available for guest questions</li>
+                                        <li>Handle issues professionally</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Payment Guide -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="payment-guide">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#paymentContent">
+                                    <i class="fas fa-credit-card me-2"></i>Payments and Payouts
+                                </button>
+                            </h2>
+                            <div id="paymentContent" class="accordion-collapse collapse" data-bs-parent="#helpGuides">
+                                <div class="accordion-body">
+                                    <h4>For Guests</h4>
+                                    <ul>
+                                        <li>Payments are processed securely through our platform</li>
+                                        <li>You won't be charged until the host confirms your booking</li>
+                                        <li>Refunds are issued according to the cancellation policy</li>
+                                        <li>Keep your payment method on file for faster bookings</li>
+                                    </ul>
+
+                                    <h4>For Hosts</h4>
+                                    <ul>
+                                        <li>Payouts occur 24 hours after check-in</li>
+                                        <li>You'll receive the full amount minus a 3% service fee</li>
+                                        <li>Link your bank account or PayPal for payouts</li>
+                                        <li>Track your earnings in the host dashboard</li>
+                                    </ul>
+
+                                    <h4>Cancellation Policies</h4>
+                                    <ul>
+                                        <li><strong>Flexible:</strong> Full refund up to 24 hours before check-in</li>
+                                        <li><strong>Moderate:</strong> Full refund up to 5 days before check-in</li>
+                                        <li><strong>Strict:</strong> 50% refund up to 1 week before check-in</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Safety Guide -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="safety-guide">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#safetyContent">
+                                    <i class="fas fa-shield-alt me-2"></i>Staying Safe on Heavenly
+                                </button>
+                            </h2>
+                            <div id="safetyContent" class="accordion-collapse collapse" data-bs-parent="#helpGuides">
+                                <div class="accordion-body">
+                                    <h4>Identity Verification</h4>
+                                    <p>All users are encouraged to verify their identity through our secure process. Verified users display a checkmark next to their name.</p>
+
+                                    <h4>Communication Guidelines</h4>
+                                    <ul>
+                                        <li>Always communicate through the Heavenly platform</li>
+                                        <li>Never share personal financial information</li>
+                                        <li>Report suspicious behavior immediately</li>
+                                        <li>Trust your instincts and cancel if something feels off</li>
+                                    </ul>
+
+                                    <h4>During Your Stay</h4>
+                                    <ul>
+                                        <li>Take photos of the property upon arrival</li>
+                                        <li>Keep valuables secure</li>
+                                        <li>Follow house rules and local laws</li>
+                                        <li>Contact support if you encounter any issues</li>
+                                    </ul>
+
+                                    <h4>Resolution Center</h4>
+                                    <p>If you experience problems during your stay, contact our resolution specialists immediately. We're here to help mediate and ensure fair outcomes.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Mobile Guide -->
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="mobile-guide">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#mobileContent">
+                                    <i class="fas fa-mobile-alt me-2"></i>Using Heavenly on Mobile
+                                </button>
+                            </h2>
+                            <div id="mobileContent" class="accordion-collapse collapse" data-bs-parent="#helpGuides">
+                                <div class="accordion-body">
+                                    <h4>Downloading the App</h4>
+                                    <ul>
+                                        <li>Available on iOS App Store and Google Play Store</li>
+                                        <li>Search for "Heavenly" or scan the QR code on our website</li>
+                                        <li>Sign in with your existing account</li>
+                                    </ul>
+
+                                    <h4>Key Features</h4>
+                                    <ul>
+                                        <li>Instant booking confirmations</li>
+                                        <li>Push notifications for messages and updates</li>
+                                        <li>Offline access to your bookings</li>
+                                        <li>Easy photo uploads for reviews</li>
+                                    </ul>
+
+                                    <h4>Tips for Mobile Use</h4>
+                                    <ul>
+                                        <li>Enable location services for better search results</li>
+                                        <li>Set up biometric authentication for security</li>
+                                        <li>Use the camera to scan QR codes for check-in</li>
+                                        <li>Save listings to your device for offline viewing</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Video Tutorials Section -->
+            <div id="videos" class="row mt-5">
+                <div class="col-12">
+                    <h2 class="h3 mb-4">Video Tutorials</h2>
+                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                        <div class="col">
+                            <div class="card shadow-sm">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-play-circle fa-3x text-primary mb-3"></i>
+                                    <h6 class="card-title">Getting Started</h6>
+                                    <p class="card-text small text-muted">5-minute overview</p>
+                                    <button class="btn btn-outline-primary btn-sm">Watch Video</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card shadow-sm">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-play-circle fa-3x text-success mb-3"></i>
+                                    <h6 class="card-title">Making Your First Booking</h6>
+                                    <p class="card-text small text-muted">8-minute guide</p>
+                                    <button class="btn btn-outline-success btn-sm">Watch Video</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="card shadow-sm">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-play-circle fa-3x text-info mb-3"></i>
+                                    <h6 class="card-title">Hosting Best Practices</h6>
+                                    <p class="card-text small text-muted">12-minute tutorial</p>
+                                    <button class="btn btn-outline-info btn-sm">Watch Video</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Section -->
+            <div class="row mt-5">
+                <div class="col-12 text-center">
+                    <div class="card shadow-sm bg-light">
+                        <div class="card-body py-5">
+                            <h3 class="card-title mb-3">Still Need Help?</h3>
+                            <p class="card-text mb-4">Our support team is available 24/7 to assist you with any questions or issues.</p>
+                            <div class="row justify-content-center">
+                                <div class="col-md-3 mb-3">
+                                    <a href="/contact" class="btn btn-primary btn-lg w-100">
+                                        <i class="fas fa-envelope me-2"></i>Contact Us
+                                    </a>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <a href="/faq" class="btn btn-outline-primary btn-lg w-100">
+                                        <i class="fas fa-question-circle me-2"></i>FAQ
+                                    </a>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <a href="tel:+1-800-HEAVENLY" class="btn btn-success btn-lg w-100">
+                                        <i class="fas fa-phone me-2"></i>Call Support
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Simple search functionality for help center
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('helpSearch');
+    const helpTopics = document.querySelectorAll('.help-topic');
+
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+
+        helpTopics.forEach(topic => {
+            const title = topic.querySelector('.card-title').textContent.toLowerCase();
+            const description = topic.querySelector('.card-text').textContent.toLowerCase();
+
+            if (title.includes(searchTerm) || description.includes(searchTerm)) {
+                topic.style.display = '';
+            } else {
+                topic.style.display = 'none';
+            }
+        });
+    });
+});
+</script>

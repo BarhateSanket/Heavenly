@@ -1,14 +1,15 @@
-# 🏠 Heavenly - Airbnb Clone
+# 🏠 Heavenly - Property Rental Platform
 
 <div align="center">
 
 ![Node.js](https://img.shields.io/badge/Node.js-v18+-green.svg)
 ![Express](https://img.shields.io/badge/Express-v4.21-blue.svg)
 ![MongoDB](https://img.shields.io/badge/MongoDB-v8.10-brightgreen.svg)
-![License](https://img.shields.io/badge/License-MIT-yellow.svg)
+![Socket.io](https://img.shields.io/badge/Socket.io-v4.7-blue.svg)
+![License](https://img.shields.io/badge/License-ISC-yellow.svg)
 ![Tests](https://img.shields.io/badge/Tests-Jest-red.svg)
 
-A full-featured, production-ready property rental platform inspired by Airbnb. Built with modern web technologies and best practices, featuring secure authentication, real-time search, comprehensive API, and extensive testing.
+A comprehensive, production-ready property rental platform built with modern web technologies. Features real-time messaging, premium listings, advanced analytics, and a complete ecosystem for hosts and guests.
 
 [Features](#-features) • [Tech Stack](#-tech-stack) • [Installation](#-installation) • [API Documentation](#-api-documentation) • [Testing](#-testing)
 
@@ -38,16 +39,19 @@ A full-featured, production-ready property rental platform inspired by Airbnb. B
 
 ## 🌟 Overview
 
-**Heavenly** is a sophisticated full-stack web application that replicates core Airbnb functionality. It provides a seamless platform for property owners to list their accommodations and travelers to discover and book their perfect stay. The application emphasizes security, scalability, and user experience.
+**Heavenly** is a sophisticated full-stack web application that provides a complete property rental ecosystem. It offers a seamless platform for property owners to list their accommodations and travelers to discover and book their perfect stay. The application emphasizes security, scalability, real-time communication, and comprehensive user experience.
 
 ### Key Highlights
 
 - 🔐 **Secure Authentication** - Passport.js with bcrypt password hashing
+- 💬 **Real-time Messaging** - Socket.io powered chat system
 - 🎨 **Responsive Design** - Mobile-first approach with custom CSS
 - 🚀 **RESTful API** - Complete API for third-party integrations
 - 🧪 **Test Coverage** - Comprehensive Jest test suite
 - 🛡️ **Production-Ready** - Helmet security, rate limiting, input validation
-- 📊 **Advanced Search** - Multi-criteria filtering and pagination
+- 📊 **Advanced Analytics** - Host dashboards with detailed metrics
+- ⭐ **Premium Features** - Featured listings and premium tiers
+- 🔔 **Notification System** - Real-time notifications and alerts
 
 ---
 
@@ -57,26 +61,88 @@ A full-featured, production-ready property rental platform inspired by Airbnb. B
 - ✅ **Secure Authentication** - Local strategy with Passport.js
 - ✅ **Session Management** - Express-session with secure cookies
 - ✅ **Password Encryption** - bcryptjs for secure password hashing
-- ✅ **User Authorization** - Role-based access control for listings
+- ✅ **User Profiles** - Comprehensive user profiles with avatars
+- ✅ **User Following** - Follow/unfollow other users
+- ✅ **Privacy Settings** - Public/private profile controls
+- ✅ **User Authorization** - Role-based access control
 
 ### Listings Management
 - ✅ **CRUD Operations** - Create, read, update, and delete property listings
+- ✅ **Premium Listings** - Featured listings with premium tiers (Basic, Premium, Gold)
 - ✅ **Image Uploads** - Support for property images with default fallbacks
-- ✅ **Rich Metadata** - Title, description, price, location, country
+- ✅ **Rich Metadata** - Title, description, price, location, country, amenities
 - ✅ **Ownership Tracking** - Users can only edit/delete their own listings
 - ✅ **Pagination** - Browse listings with 12 items per page
+- ✅ **Map Integration** - Interactive maps with Leaflet.js
 
 ### Reviews & Ratings
-- ✅ **User Reviews** - Authenticated users can leave reviews
-- ✅ **Star Ratings** - 1-5 star rating system
+- ✅ **User Reviews** - Authenticated users can leave detailed reviews
+- ✅ **Star Ratings** - 1-5 star rating system with detailed categories
 - ✅ **Review Management** - Edit and delete own reviews
+- ✅ **Admin Moderation** - Review moderation system for inappropriate content
 - ✅ **Cascade Deletion** - Reviews automatically deleted with listings
 
+### Booking System
+- ✅ **Property Bookings** - Complete booking system with availability checking
+- ✅ **Booking Management** - View, confirm, and cancel bookings
+- ✅ **Host Dashboard** - Dedicated dashboard for hosts with analytics
+- ✅ **Guest Dashboard** - Booking history and management for guests
+- ✅ **Availability Calendar** - Real-time availability checking
+- ✅ **Blocked Dates** - Hosts can block specific dates
+
+### Real-time Messaging
+- ✅ **Chat System** - Real-time messaging between users
+- ✅ **Conversation Management** - Organized conversations per listing
+- ✅ **Socket.io Integration** - WebSocket-powered real-time communication
+- ✅ **Message History** - Persistent message storage and retrieval
+- ✅ **Unread Notifications** - Message notification system
+
+### Wishlists & Favorites
+- ✅ **Wishlist Creation** - Create and manage multiple wishlists
+- ✅ **Favorite Listings** - Add/remove listings from favorites
+- ✅ **Wishlist Sharing** - Public/private wishlist controls
+- ✅ **Quick Access** - Easy access to saved listings
+
+### Activity Feed
+- ✅ **Activity Tracking** - Track user activities across the platform
+- ✅ **Social Feed** - Activity feed for followed users
+- ✅ **Real-time Updates** - Live activity updates
+- ✅ **Activity Types** - Bookings, reviews, follows, messages, etc.
+
+### Notifications System
+- ✅ **Real-time Notifications** - WebSocket-powered notifications
+- ✅ **Notification Types** - Bookings, messages, reviews, follows
+- ✅ **Notification Preferences** - Customizable notification settings
+- ✅ **Email & Push** - Multiple notification channels
+- ✅ **Notification History** - Persistent notification storage
+
+### Admin Dashboard
+- ✅ **Content Moderation** - Moderate reviews and comments
+- ✅ **User Management** - Admin controls for user accounts
+- ✅ **Premium Management** - Manage premium listings and subscriptions
+- ✅ **Analytics Dashboard** - Platform-wide statistics and metrics
+- ✅ **System Monitoring** - Monitor platform health and performance
+
 ### Search & Filtering
-- ✅ **Multi-Criteria Search** - Search by title, location, or country
+- ✅ **Advanced Search** - Multi-criteria search with filters
+- ✅ **Location-based Search** - Search by location with map integration
 - ✅ **Price Filtering** - Filter listings by price range
+- ✅ **Date Filtering** - Availability-based search
 - ✅ **Real-Time Results** - Instant search feedback
 - ✅ **Query Optimization** - Efficient MongoDB queries
+
+### Billing & Transactions
+- ✅ **Transaction Tracking** - Complete transaction history
+- ✅ **Billing Management** - Invoice generation and management
+- ✅ **Payment Records** - Secure payment tracking
+- ✅ **Export Features** - CSV/PDF export for financial records
+- ✅ **Commission Tracking** - Platform commission management
+
+### Comments System
+- ✅ **Listing Comments** - Comment on property listings
+- ✅ **Threaded Comments** - Nested comment replies
+- ✅ **Comment Moderation** - Admin moderation for inappropriate content
+- ✅ **Real-time Updates** - Live comment updates
 
 ### Security Features
 - ✅ **Helmet.js** - Security headers and XSS protection
@@ -84,18 +150,22 @@ A full-featured, production-ready property rental platform inspired by Airbnb. B
 - ✅ **Input Validation** - Joi schema validation
 - ✅ **CSRF Protection** - Secure form submissions
 - ✅ **HTTP-Only Cookies** - Prevent XSS attacks
+- ✅ **File Upload Security** - Secure file upload handling
 
 ### API & Integration
 - ✅ **RESTful API** - Complete API for programmatic access
 - ✅ **JSON Responses** - Structured API responses
 - ✅ **Error Handling** - Comprehensive error messages
 - ✅ **API Documentation** - Well-documented endpoints
+- ✅ **Third-party Integration** - Ready for external integrations
 
 ### User Experience
 - ✅ **Flash Messages** - Success and error notifications
 - ✅ **Responsive UI** - Works on all device sizes
+- ✅ **Progressive Web App** - PWA features with service worker
 - ✅ **Clean Design** - Modern, intuitive interface
 - ✅ **Loading States** - User feedback during operations
+- ✅ **Accessibility** - WCAG compliant design
 
 ---
 
@@ -108,6 +178,7 @@ A full-featured, production-ready property rental platform inspired by Airbnb. B
 | **Express.js** | v4.21 | Web application framework |
 | **MongoDB** | v8.10 | NoSQL database |
 | **Mongoose** | v8.10 | MongoDB ODM |
+| **Socket.io** | v4.7 | Real-time communication |
 
 ### Authentication & Security
 | Technology | Version | Purpose |
@@ -127,6 +198,7 @@ A full-featured, production-ready property rental platform inspired by Airbnb. B
 | **method-override** | v3.0 | HTTP method override |
 | **express-session** | v1.18 | Session management |
 | **connect-flash** | v0.1 | Flash messages |
+| **multer** | v1.4.5 | File upload handling |
 
 ### Templating & Frontend
 | Technology | Version | Purpose |
@@ -134,6 +206,18 @@ A full-featured, production-ready property rental platform inspired by Airbnb. B
 | **EJS** | v3.1 | Templating engine |
 | **ejs-mate** | v4.0 | Layout support for EJS |
 | **Custom CSS** | - | Responsive styling |
+| **Leaflet.js** | v1.9 | Interactive maps |
+| **Chart.js** | v4.4 | Data visualization |
+| **Flatpickr** | v4.6 | Date/time picker |
+
+### File Processing & Utilities
+| Technology | Version | Purpose |
+|------------|---------|---------|
+| **Sharp** | v0.33 | Image processing |
+| **PDFKit** | v0.17 | PDF generation |
+| **csv-stringify** | v6.6 | CSV export |
+| **csv-parse** | v6.1 | CSV parsing |
+| **Moment.js** | v2.30 | Date/time manipulation |
 
 ### Testing & Development
 | Technology | Version | Purpose |
@@ -147,6 +231,8 @@ A full-featured, production-ready property rental platform inspired by Airbnb. B
 | Technology | Version | Purpose |
 |------------|---------|---------|
 | **dotenv** | v17.2 | Environment variables |
+| **compression** | v1.7 | Response compression |
+| **serve-favicon** | v2.5 | Favicon serving |
 
 ---
 
@@ -264,10 +350,10 @@ Request → Rate Limiter → Helmet → Session → Passport → Flash → Route
    ```
 
 7. **Access the application**
-   
+
    Open your browser and navigate to:
    ```
-   http://localhost:8080
+   http://localhost:8000
    ```
 
 ---
@@ -751,42 +837,121 @@ Time:        2.5s
 Heavenly/
 │
 ├── Models/                    # Mongoose schemas
-│   ├── listing.js            # Listing model
-│   ├── review.js             # Review model
-│   └── user.js               # User model
+│   ├── user.js               # User model with profiles, settings
+│   ├── listing.js            # Property listing model
+│   ├── booking.js            # Booking/reservation model
+│   ├── review.js             # Review and rating model
+│   ├── message.js            # Chat message model
+│   ├── conversation.js       # Chat conversation model
+│   ├── comment.js            # Listing comments model
+│   ├── wishlist.js           # User wishlists model
+│   ├── follow.js             # User following model
+│   ├── activity.js           # Activity feed model
+│   ├── notification.js       # Notification model
+│   ├── transaction.js        # Payment transaction model
+│   └── billing.js            # Billing period model
 │
-├── routes/                    # Express routes
-│   ├── api.js                # API endpoints
-│   ├── listings.js           # Listing routes
-│   ├── review.js             # Review routes
-│   └── user.js               # User authentication routes
+├── routes/                    # Express route handlers
+│   ├── user.js               # Authentication & user management
+│   ├── listings.js           # Property listings CRUD
+│   ├── bookings.js           # Booking management
+│   ├── review.js             # Review management
+│   ├── messages.js           # Real-time messaging
+│   ├── comments.js           # Comment system
+│   ├── wishlists.js          # Wishlist management
+│   ├── activities.js         # Activity feed
+│   ├── notifications.js      # Notification system
+│   ├── premium.js            # Premium features
+│   ├── admin.js              # Admin dashboard
+│   ├── api.js                # REST API endpoints
+│   ├── search.js             # Advanced search
+│   └── static.js             # Static pages
 │
 ├── views/                     # EJS templates
-│   ├── layouts/              # Layout templates
-│   │   └── boilerplate.ejs   # Main layout
+│   ├── layouts/
+│   │   └── boilerplate.ejs   # Main layout template
 │   ├── includes/             # Partial templates
 │   │   ├── navbar.ejs        # Navigation bar
 │   │   ├── footer.ejs        # Footer
 │   │   └── flash.ejs         # Flash messages
-│   ├── listings/             # Listing views
+│   ├── users/                # User-related views
+│   │   ├── login.ejs         # Login page
+│   │   ├── signup.ejs        # Registration page
+│   │   ├── profile.ejs       # User profile
+│   │   ├── dashboard.ejs     # User dashboard
+│   │   ├── settings.ejs      # Account settings
+│   │   ├── billing.ejs       # Billing history
+│   │   ├── followers.ejs     # Followers list
+│   │   └── following.ejs     # Following list
+│   ├── listings/             # Property views
 │   │   ├── index.ejs         # All listings
 │   │   ├── show.ejs          # Single listing
 │   │   ├── new.ejs           # Create listing
 │   │   └── edit.ejs          # Edit listing
-│   ├── users/                # User views
-│   │   ├── login.ejs         # Login page
-│   │   └── signup.ejs        # Signup page
-│   └── error.ejs             # Error page
+│   ├── bookings/             # Booking views
+│   │   ├── index.ejs         # Booking management
+│   │   └── show.ejs          # Booking details
+│   ├── messages/             # Messaging views
+│   │   ├── index.ejs         # Inbox
+│   │   └── chat.ejs          # Chat interface
+│   ├── wishlists/            # Wishlist views
+│   │   └── show.ejs          # Wishlist details
+│   ├── activities/           # Activity views
+│   │   └── feed.ejs          # Activity feed
+│   ├── notifications/        # Notification views
+│   │   └── index.ejs         # Notifications list
+│   ├── admin/                # Admin views
+│   │   ├── dashboard.ejs     # Admin dashboard
+│   │   ├── reviews.ejs       # Review moderation
+│   │   ├── comments.ejs      # Comment moderation
+│   │   └── premium.ejs       # Premium management
+│   ├── host/                 # Host-specific views
+│   │   └── dashboard.ejs     # Host analytics
+│   ├── search.ejs            # Search results
+│   ├── homepage.ejs          # Landing page
+│   ├── about.ejs             # About page
+│   ├── contact.ejs           # Contact page
+│   ├── faq.ejs               # FAQ page
+│   ├── help-center.ejs       # Help center
+│   ├── safety.ejs            # Safety information
+│   ├── terms-of-service.ejs  # Terms of service
+│   ├── privacy-policy.ejs    # Privacy policy
+│   ├── cookie-policy.ejs     # Cookie policy
+│   ├── accessibility.ejs     # Accessibility info
+│   ├── cancellation-policy.ejs # Cancellation policy
+│   ├── sitemap.ejs           # Site map
+│   └── error.ejs             # Error pages
 │
 ├── Public/                    # Static assets
 │   ├── css/
-│   │   └── style.css         # Custom styles
-│   └── js/
-│       └── script.js         # Client-side JavaScript
+│   │   ├── style.css         # Main styles
+│   │   ├── components.css    # Component styles
+│   │   ├── design-tokens.css # Design tokens
+│   │   ├── grid-system.css   # Grid system
+│   │   └── host-dashboard.css # Host dashboard styles
+│   ├── js/
+│   │   ├── script.js         # Main JavaScript
+│   │   ├── notifications.js  # Notification handling
+│   │   ├── comments.js       # Comment system
+│   │   ├── wishlist.js       # Wishlist functionality
+│   │   ├── follow.js         # Follow system
+│   │   ├── activityFeed.js   # Activity feed
+│   │   └── share.js          # Social sharing
+│   ├── assets/
+│   │   └── logo1.png         # Logo assets
+│   ├── icon-192x192.png      # PWA icons
+│   ├── icon-512x512.png      # PWA icons
+│   ├── manifest.json         # PWA manifest
+│   └── sw.js                 # Service worker
+│
+├── services/                  # Business logic services
+│   └── ActivityFeedService.js # Activity feed service
 │
 ├── utils/                     # Utility functions
 │   ├── ExpressError.js       # Custom error class
-│   └── wrapasync.js          # Async error wrapper
+│   ├── wrapasync.js          # Async error wrapper
+│   ├── activityHelpers.js    # Activity utilities
+│   └── shareUtils.js         # Sharing utilities
 │
 ├── tests/                     # Test files
 │   ├── setup.js              # Test configuration
@@ -796,13 +961,15 @@ Heavenly/
 │   ├── data.js               # Sample data
 │   └── index.js              # Seed script
 │
-├── assets/                    # Project assets
+├── uploads/                   # User uploads
+│   └── avatars/              # User avatar uploads
 │
 ├── app.js                     # Main application file
 ├── middleware.js              # Custom middleware
 ├── schema.js                  # Joi validation schemas
 ├── jest.config.js             # Jest configuration
 ├── package.json               # Dependencies
+├── TODO.md                    # Development tasks
 ├── .env                       # Environment variables (not in repo)
 ├── .gitignore                 # Git ignore rules
 └── README.md                  # This file
@@ -944,9 +1111,9 @@ SOFTWARE.
 
 ### Links
 
-- **Repository**: [GitHub](https://github.com/yourusername/heavenly-airbnb-clone)
-- **Issues**: [Issue Tracker](https://github.com/yourusername/heavenly-airbnb-clone/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/yourusername/heavenly-airbnb-clone/discussions)
+- **Repository**: [GitHub](https://github.com/BarhateSanket/Heavenly)
+- **Issues**: [Issue Tracker](https://github.com/BarhateSanket/Heavenly/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/BarhateSanket/Heavenly/discussions)
 
 ---
 

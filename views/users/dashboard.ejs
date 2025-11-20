@@ -1,0 +1,516 @@
+<% layout("layouts/boilerplate") %>
+
+<div class="container-fluid">
+    <!-- Header Section -->
+    <div class="row mt-4 mb-4">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="mb-0">Dashboard</h1>
+                    <p class="text-muted mb-0">Welcome back, <%= currentUser.username || currentUser.email %>!</p>
+                </div>
+                <div class="d-flex gap-2">
+                    <% if (!isHost) { %>
+                        <a href="/listings/new" class="btn add-btn">
+                            <i class="fas fa-plus me-2"></i>Become a Host
+                        </a>
+                    <% } else { %>
+                        <a href="/listings/new" class="btn add-btn">
+                            <i class="fas fa-plus me-2"></i>New Listing
+                        </a>
+                    <% } %>
+                    <a href="/messages" class="btn btn-outline-primary position-relative">
+                        <i class="fas fa-envelope me-2"></i>Messages
+                        <% if (stats.unreadMessages > 0) { %>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                <%= stats.unreadMessages %>
+                            </span>
+                        <% } %>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats Section -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="row g-3">
+                <div class="col-lg-3 col-md-6">
+                    <div class="card h-100 text-center">
+                        <div class="card-body">
+                            <div class="stats-icon mb-2">
+                                <i class="fas fa-calendar-check text-primary"></i>
+                            </div>
+                            <h4 class="mb-1"><%= stats.totalBookings %></h4>
+                            <p class="text-muted mb-0">Total Bookings</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <div class="card h-100 text-center">
+                        <div class="card-body">
+                            <div class="stats-icon mb-2">
+                                <i class="fas fa-clock text-success"></i>
+                            </div>
+                            <h4 class="mb-1"><%= stats.upcomingBookings %></h4>
+                            <p class="text-muted mb-0">Upcoming Trips</p>
+                        </div>
+                    </div>
+                </div>
+                <% if (isHost) { %>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="card h-100 text-center">
+                            <div class="card-body">
+                                <div class="stats-icon mb-2">
+                                    <i class="fas fa-home text-info"></i>
+                                </div>
+                                <h4 class="mb-1"><%= stats.totalListings %></h4>
+                                <p class="text-muted mb-0">Your Listings</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="card h-100 text-center">
+                            <div class="card-body">
+                                <div class="stats-icon mb-2">
+                                    <i class="fas fa-rupee-sign text-warning"></i>
+                                </div>
+                                <h4 class="mb-1">₹<%= stats.totalEarnings.toLocaleString("en-IN") %></h4>
+                                <p class="text-muted mb-0">Total Earnings</p>
+                            </div>
+                        </div>
+                    </div>
+                <% } else { %>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="card h-100 text-center">
+                            <div class="card-body">
+                                <div class="stats-icon mb-2">
+                                    <i class="fas fa-envelope text-danger"></i>
+                                </div>
+                                <h4 class="mb-1"><%= stats.unreadMessages %></h4>
+                                <p class="text-muted mb-0">Unread Messages</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="card h-100 text-center">
+                            <div class="card-body">
+                                <div class="stats-icon mb-2">
+                                    <i class="fas fa-heart text-success"></i>
+                                </div>
+                                <h4 class="mb-1"><%= currentUser.followingCount || 0 %></h4>
+                                <p class="text-muted mb-0">Following</p>
+                            </div>
+                        </div>
+                    </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Left Column -->
+        <div class="col-lg-8">
+            <!-- Upcoming Bookings Section -->
+            <% if (hasBookings) { %>
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">
+                                <i class="fas fa-calendar-plus me-2"></i>Upcoming Bookings
+                            </h5>
+                            <a href="/bookings" class="btn btn-outline-primary btn-sm">View All</a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <% if (guestBookings.upcoming.length > 0) { %>
+                            <div class="row">
+                                <% guestBookings.upcoming.forEach(booking => { %>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="booking-card border rounded p-3">
+                                            <div class="d-flex align-items-center mb-2">
+                                                <img src="<%= booking.listing.image %>" alt="<%= booking.listing.title %>" class="rounded me-3" style="width: 60px; height: 60px; object-fit: cover;">
+                                                <div class="flex-grow-1">
+                                                    <h6 class="mb-0"><%= booking.listing.title %></h6>
+                                                    <small class="text-muted"><%= booking.listing.location %></small>
+                                                </div>
+                                            </div>
+                                            <div class="booking-details">
+                                                <div class="row g-2 text-sm">
+                                                    <div class="col-6">
+                                                        <strong>Check-in:</strong><br>
+                                                        <%= new Date(booking.checkIn).toLocaleDateString() %>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <strong>Check-out:</strong><br>
+                                                        <%= new Date(booking.checkOut).toLocaleDateString() %>
+                                                    </div>
+                                                </div>
+                                                <div class="mt-2">
+                                                    <span class="badge bg-<%= booking.status === 'confirmed' ? 'success' : 'warning' %>">
+                                                        <%= booking.status.charAt(0).toUpperCase() + booking.status.slice(1) %>
+                                                    </span>
+                                                </div>
+                                                <div class="mt-2">
+                                                    <a href="/bookings/<%= booking._id %>" class="btn btn-outline-primary btn-sm">View Details</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <% }); %>
+                            </div>
+                        <% } else { %>
+                            <div class="text-center py-4">
+                                <i class="fas fa-calendar-times fa-2x text-muted mb-3"></i>
+                                <h6 class="text-muted">No upcoming bookings</h6>
+                                <a href="/listings" class="btn btn-primary">Browse Listings</a>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            <% } %>
+
+            <!-- Host Bookings Section (if user is a host) -->
+            <% if (isHost && hostBookings.upcoming.length > 0) { %>
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">
+                                <i class="fas fa-users me-2"></i>Guest Bookings
+                            </h5>
+                            <a href="/bookings" class="btn btn-outline-primary btn-sm">View All</a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <% hostBookings.upcoming.forEach(booking => { %>
+                                <div class="col-md-6 mb-3">
+                                    <div class="booking-card border rounded p-3">
+                                        <div class="d-flex align-items-center mb-2">
+                                            <img src="<%= booking.listing.image %>" alt="<%= booking.listing.title %>" class="rounded me-3" style="width: 60px; height: 60px; object-fit: cover;">
+                                            <div class="flex-grow-1">
+                                                <h6 class="mb-0"><%= booking.listing.title %></h6>
+                                                <small class="text-muted">Guest: <%= booking.guest.username %></small>
+                                            </div>
+                                        </div>
+                                        <div class="booking-details">
+                                            <div class="row g-2 text-sm">
+                                                <div class="col-6">
+                                                    <strong>Check-in:</strong><br>
+                                                    <%= new Date(booking.checkIn).toLocaleDateString() %>
+                                                </div>
+                                                <div class="col-6">
+                                                    <strong>Guests:</strong><br>
+                                                    <%= booking.guests %>
+                                                </div>
+                                            </div>
+                                            <div class="mt-2">
+                                                <span class="badge bg-<%= booking.status === 'confirmed' ? 'success' : 'warning' %>">
+                                                    <%= booking.status.charAt(0).toUpperCase() + booking.status.slice(1) %>
+                                                </span>
+                                                <span class="text-muted ms-2">₹<%= booking.totalPrice.toLocaleString("en-IN") %></span>
+                                            </div>
+                                            <div class="mt-2">
+                                                <a href="/bookings/<%= booking._id %>" class="btn btn-outline-primary btn-sm">View Details</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <% }); %>
+                        </div>
+                    </div>
+                </div>
+            <% } %>
+
+            <!-- Listings Section (if user is a host) -->
+            <% if (isHost) { %>
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">
+                                <i class="fas fa-home me-2"></i>Your Listings
+                            </h5>
+                            <a href="/listings/new" class="btn add-btn btn-sm">Add New</a>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <% if (listings.length > 0) { %>
+                            <div class="row">
+                                <% listings.forEach(listing => { %>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="listing-card border rounded overflow-hidden">
+                                            <div class="position-relative">
+                                                <img src="<%= listing.image %>" alt="<%= listing.title %>" class="card-img-top" style="height: 120px; object-fit: cover;">
+                                                <% if (listing.isFeatured) { %>
+                                                    <div class="featured-ribbon">
+                                                        <span>Featured</span>
+                                                    </div>
+                                                <% } %>
+                                                <% if (listing.premiumTier) { %>
+                                                    <div class="premium-badge">
+                                                        <i class="fas fa-crown"></i>
+                                                        <span><%= listing.premiumTier %></span>
+                                                    </div>
+                                                <% } %>
+                                            </div>
+                                            <div class="p-3">
+                                                <h6 class="mb-1"><%= listing.title %></h6>
+                                                <p class="text-muted small mb-2"><%= listing.location %></p>
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <span class="text-primary fw-bold">₹<%= listing.price.toLocaleString("en-IN") %>/night</span>
+                                                    <div class="btn-group btn-group-sm">
+                                                        <a href="/listings/<%= listing._id %>" class="btn btn-outline-primary">View</a>
+                                                        <a href="/listings/<%= listing._id %>/edit" class="btn btn-outline-secondary">Edit</a>
+                                                    </div>
+                                                </div>
+                                                <% if (listing.reviews && listing.reviews.length > 0) { %>
+                                                    <div class="mt-2">
+                                                        <small class="text-muted">
+                                                            <i class="fas fa-star text-warning"></i>
+                                                            <%= listing.reviews[0].rating %>/5
+                                                        </small>
+                                                    </div>
+                                                <% } %>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <% }); %>
+                            </div>
+                        <% } else { %>
+                            <div class="text-center py-4">
+                                <i class="fas fa-home fa-2x text-muted mb-3"></i>
+                                <h6 class="text-muted">No listings yet</h6>
+                                <a href="/listings/new" class="btn add-btn">Create Your First Listing</a>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+
+        <!-- Right Column -->
+        <div class="col-lg-4">
+            <!-- Recent Messages -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">
+                            <i class="fas fa-envelope me-2"></i>Messages
+                        </h5>
+                        <a href="/messages" class="btn btn-outline-primary btn-sm">View All</a>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <% if (hasConversations) { %>
+                        <div class="list-group list-group-flush">
+                            <% conversations.slice(0, 5).forEach(conversation => { 
+                                const otherParticipant = conversation.participants.find(p => p && !p._id.equals(currentUser._id));
+                            %>
+                                <a href="/messages/<%= conversation._id %>" class="list-group-item list-group-item-action">
+                                    <div class="d-flex align-items-center">
+                                        <div class="flex-grow-1">
+                                            <h6 class="mb-0"><%= otherParticipant ? (otherParticipant.username || otherParticipant.email) : 'Unknown User' %></h6>
+                                            <p class="text-muted small mb-0 text-truncate"><%= conversation.listing ? conversation.listing.title : 'Listing' %></p>
+                                            <% if (conversation.lastMessage) { %>
+                                                <p class="text-muted small mb-0 text-truncate">
+                                                    <%= conversation.lastMessage.content %>
+                                                </p>
+                                            <% } %>
+                                        </div>
+                                        <div class="text-end">
+                                            <% if (conversation.lastMessage) { %>
+                                                <small class="text-muted">
+                                                    <%= new Date(conversation.lastMessage.createdAt).toLocaleDateString() %>
+                                                </small>
+                                            <% } %>
+                                        </div>
+                                    </div>
+                                </a>
+                            <% }); %>
+                        </div>
+                    <% } else { %>
+                        <div class="p-4 text-center">
+                            <i class="fas fa-envelope-open fa-2x text-muted mb-3"></i>
+                            <h6 class="text-muted">No messages yet</h6>
+                            <p class="text-muted small">Start a conversation with hosts or guests</p>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-history me-2"></i>Recent Activity
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    <% if (activities.length > 0) { %>
+                        <div class="list-group list-group-flush">
+                            <% activities.forEach(activity => { %>
+                                <div class="list-group-item">
+                                    <div class="d-flex">
+                                        <div class="activity-icon me-3">
+                                            <% 
+                                                let activityIcon = 'fas fa-circle';
+                                                let activityClass = 'text-muted';
+                                                switch(activity.type) {
+                                                    case 'listing_created':
+                                                        activityIcon = 'fas fa-home';
+                                                        activityClass = 'text-primary';
+                                                        break;
+                                                    case 'booking_made':
+                                                        activityIcon = 'fas fa-calendar-check';
+                                                        activityClass = 'text-success';
+                                                        break;
+                                                    case 'booking_confirmed':
+                                                        activityIcon = 'fas fa-check-circle';
+                                                        activityClass = 'text-success';
+                                                        break;
+                                                    case 'message_sent':
+                                                        activityIcon = 'fas fa-envelope';
+                                                        activityClass = 'text-info';
+                                                        break;
+                                                    case 'user_followed':
+                                                        activityIcon = 'fas fa-user-plus';
+                                                        activityClass = 'text-warning';
+                                                        break;
+                                                    default:
+                                                        activityIcon = 'fas fa-circle';
+                                                        activityClass = 'text-muted';
+                                                }
+                                            %>
+                                            <i class="<%= activityIcon %> <%= activityClass %>"></i>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <% 
+                                                let activityText = 'Unknown activity';
+                                                switch(activity.type) {
+                                                    case 'listing_created':
+                                                        activityText = `Created listing: ${activity.metadata?.title || 'a listing'}`;
+                                                        break;
+                                                    case 'booking_made':
+                                                        activityText = `Made a booking for ${activity.metadata?.listingTitle || 'a listing'}`;
+                                                        break;
+                                                    case 'booking_confirmed':
+                                                        activityText = `Booking confirmed for ${activity.metadata?.listingTitle || 'a listing'}`;
+                                                        break;
+                                                    case 'message_sent':
+                                                        activityText = `Sent a message to ${activity.metadata?.recipientName || 'someone'}`;
+                                                        break;
+                                                    case 'user_followed':
+                                                        activityText = 'Started following a user';
+                                                        break;
+                                                }
+                                            %>
+                                            <p class="mb-0 small"><%= activityText %></p>
+                                            <small class="text-muted">
+                                                <%= new Date(activity.createdAt).toLocaleDateString() %>
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            <% }); %>
+                        </div>
+                    <% } else { %>
+                        <div class="p-4 text-center">
+                            <i class="fas fa-history fa-2x text-muted mb-3"></i>
+                            <h6 class="text-muted">No recent activity</h6>
+                            <p class="text-muted small">Your activity will appear here</p>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-bolt me-2"></i>Quick Actions
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="/listings" class="btn btn-outline-primary">
+                            <i class="fas fa-search me-2"></i>Browse Listings
+                        </a>
+                        <a href="/bookings" class="btn btn-outline-info">
+                            <i class="fas fa-calendar me-2"></i>My Bookings
+                        </a>
+                        <% if (!isHost) { %>
+                            <a href="/listings/new" class="btn add-btn">
+                                <i class="fas fa-home me-2"></i>Become a Host
+                            </a>
+                        <% } else { %>
+                            <a href="/listings/new" class="btn add-btn">
+                                <i class="fas fa-plus me-2"></i>New Listing
+                            </a>
+                        <% } %>
+                        <a href="/users/profile/<%= currentUser._id %>" class="btn btn-outline-secondary">
+                            <i class="fas fa-user me-2"></i>Edit Profile
+                        </a>
+                        <a href="/users/billing" class="btn btn-outline-success">
+                            <i class="fas fa-receipt me-2"></i>Billing History
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Custom Styles for Dashboard -->
+<style>
+.stats-icon i {
+    font-size: 2rem;
+}
+
+.booking-card:hover {
+    background-color: var(--color-bg-secondary);
+    transition: background-color var(--transition-fast);
+}
+
+.listing-card {
+    transition: all var(--transition-fast);
+}
+
+.listing-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.activity-icon {
+    width: 20px;
+    text-align: center;
+}
+
+.list-group-item {
+    border: none;
+    border-bottom: 1px solid var(--color-border-light);
+}
+
+.list-group-item:last-child {
+    border-bottom: none;
+}
+
+.list-group-item-action:hover {
+    background-color: var(--color-bg-secondary);
+}
+
+@media (max-width: 768px) {
+    .btn-group .btn {
+        font-size: 0.8rem;
+        padding: 0.25rem 0.5rem;
+    }
+    
+    .stats-icon i {
+        font-size: 1.5rem;
+    }
+    
+    .booking-card .booking-details {
+        font-size: 0.875rem;
+    }
+}
+</style>

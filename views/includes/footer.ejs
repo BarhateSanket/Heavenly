@@ -1,15 +1,187 @@
-<footer>
-    <div class="f-info">
-        <div class="f-info-socials">
-            <i class="fa-brands fa-square-facebook"></i>
-            <i class="fa-brands fa-square-instagram"></i>
-            <i class="fa-brands fa-square-twitter"></i>
+<footer class="advanced-footer" role="contentinfo">
+    <!-- Newsletter Section -->
+    <div class="footer-newsletter-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8 col-lg-6">
+                    <div class="newsletter-content">
+                        <h3 class="newsletter-title">Stay in the loop</h3>
+                        <p class="newsletter-subtitle">Get the latest listings, travel tips, and exclusive deals delivered to your inbox</p>
+                    </div>
+                </div>
+                <div class="col-md-4 col-lg-6">
+                    <form class="newsletter-form" aria-label="Newsletter subscription form">
+                        <div class="input-group">
+                            <input
+                                type="email"
+                                class="form-control newsletter-input"
+                                placeholder="Enter your email address"
+                                aria-label="Email address"
+                                required
+                            >
+                            <button
+                                type="submit"
+                                class="btn btn-primary newsletter-btn"
+                                aria-label="Subscribe to newsletter"
+                            >
+                                <span class="btn-text">Subscribe</span>
+                                <i class="fas fa-paper-plane btn-icon"></i>
+                            </button>
+                        </div>
+                        <small class="form-text privacy-note">
+                            <i class="fas fa-lock"></i>
+                            We respect your privacy. Unsubscribe at any time.
+                        </small>
+                    </form>
+                </div>
+            </div>
         </div>
-        <br />
-        <div class="f-info-copyright">&copy; 2025 Heavenly Pvt Ltd</div>
-        <div class="f-info-links">
-            <a href="/privacy">Privacy</a>
-            <a href="/terms">Terms</a>
+    </div>
+
+    <!-- Main Footer Content -->
+    <div class="footer-main-content">
+        <div class="container">
+            <div class="row">
+                <!-- Company Information Column -->
+                <div class="col-lg-3 col-md-6">
+                    <section class="footer-section" aria-labelledby="company-info-heading">
+                        <h4 id="company-info-heading" class="footer-section-title">
+                            Heavenly
+                        </h4>
+                        <p class="company-description">
+                            Discover extraordinary accommodations around the world. From cozy cabins to luxury villas, we help you find your perfect getaway.
+                        </p>
+                        <div class="contact-info">
+                            <div class="contact-item">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <div class="contact-details">
+                                    <span class="contact-label">Address</span>
+                                    <span class="contact-value">123 Travel Street, Vacation City, VC 12345</span>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <i class="fas fa-phone"></i>
+                                <div class="contact-details">
+                                    <span class="contact-label">Phone</span>
+                                    <a href="tel:+1-555-0123" class="contact-link">+1 (555) 012-3456</a>
+                                </div>
+                            </div>
+                            <div class="contact-item">
+                                <i class="fas fa-envelope"></i>
+                                <div class="contact-details">
+                                    <span class="contact-label">Email</span>
+                                    <a href="mailto:hello@heavenly.com" class="contact-link">hello@heavenly.com</a>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Quick Navigation Column -->
+                <div class="col-lg-3 col-md-6">
+                    <nav class="footer-section" aria-labelledby="quick-nav-heading">
+                        <h4 id="quick-nav-heading" class="footer-section-title">Explore</h4>
+                        <ul class="footer-nav-list">
+                            <li><a href="/listings" class="footer-nav-link">Browse All Listings</a></li>
+                            <li><a href="/listings?category=beach" class="footer-nav-link">Beachfront Homes</a></li>
+                            <li><a href="/listings?category=mountain" class="footer-nav-link">Mountain Retreats</a></li>
+                            <li><a href="/listings?category=city" class="footer-nav-link">Urban Escapes</a></li>
+                            <li><a href="/listings?category=cabin" class="footer-nav-link">Cozy Cabins</a></li>
+                            <li><a href="/listings/new" class="footer-nav-link highlight-link">Become a Host</a></li>
+                        </ul>
+                    </nav>
+                </div>
+
+                <!-- Support & Legal Column -->
+                <div class="col-lg-3 col-md-6">
+                    <section class="footer-section" aria-labelledby="support-heading">
+                        <h4 id="support-heading" class="footer-section-title">Support & Help</h4>
+                        <ul class="footer-nav-list">
+                            <li><a href="/help-center" class="footer-nav-link">Help Center</a></li>
+                            <li><a href="/contact" class="footer-nav-link">Contact Us</a></li>
+                            <li><a href="/faq" class="footer-nav-link">Frequently Asked Questions</a></li>
+                            <li><a href="/safety" class="footer-nav-link">Safety Information</a></li>
+                            <li><a href="/cancellation-policy" class="footer-nav-link">Cancellation Policy</a></li>
+                        </ul>
+
+                        <h5 class="footer-subsection-title">Legal</h5>
+                        <ul class="footer-nav-list">
+                            <li><a href="/privacy-policy" class="footer-nav-link">Privacy Policy</a></li>
+                            <li><a href="/terms-of-service" class="footer-nav-link">Terms of Service</a></li>
+                            <li><a href="/cookie-policy" class="footer-nav-link">Cookie Policy</a></li>
+                        </ul>
+                    </section>
+                </div>
+
+                <!-- Social Media & App Download Column -->
+                <div class="col-lg-3 col-md-6">
+                    <section class="footer-section" aria-labelledby="connect-heading">
+                        <h4 id="connect-heading" class="footer-section-title">Connect With Us</h4>
+
+                        <!-- Social Media Links -->
+                        <div class="social-media-section">
+                            <p class="social-media-text">Follow us on social media for travel inspiration and updates</p>
+                            <div class="social-media-links">
+                                <a href="https://facebook.com/heavenly" class="social-link facebook" aria-label="Follow us on Facebook">
+                                    <i class="fab fa-facebook-f"></i>
+                                    <span class="social-text">Facebook</span>
+                                </a>
+                                <a href="https://instagram.com/heavenly" class="social-link instagram" aria-label="Follow us on Instagram">
+                                    <i class="fab fa-instagram"></i>
+                                    <span class="social-text">Instagram</span>
+                                </a>
+                                <a href="https://twitter.com/heavenly" class="social-link twitter" aria-label="Follow us on Twitter">
+                                    <i class="fab fa-twitter"></i>
+                                    <span class="social-text">Twitter</span>
+                                </a>
+                                <a href="https://linkedin.com/company/heavenly" class="social-link linkedin" aria-label="Follow us on LinkedIn">
+                                    <i class="fab fa-linkedin-in"></i>
+                                    <span class="social-text">LinkedIn</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Business Hours -->
+                        <div class="business-hours">
+                            <h5 class="footer-subsection-title">Customer Service Hours</h5>
+                            <div class="hours-list">
+                                <div class="hours-item">
+                                    <span class="hours-day">Monday - Friday</span>
+                                    <span class="hours-time">9:00 AM - 8:00 PM EST</span>
+                                </div>
+                                <div class="hours-item">
+                                    <span class="hours-day">Saturday - Sunday</span>
+                                    <span class="hours-time">10:00 AM - 6:00 PM EST</span>
+                                </div>
+                                <div class="hours-item">
+                                    <span class="hours-day">Holidays</span>
+                                    <span class="hours-time">10:00 AM - 4:00 PM EST</span>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Bottom -->
+    <div class="footer-bottom">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <div class="footer-copyright">
+                        <p>&copy; <span class="current-year">2025</span> Heavenly Pvt Ltd. All rights reserved.</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="footer-bottom-links">
+                        <a href="/sitemap" class="bottom-link">Sitemap</a>
+                        <span class="separator">•</span>
+                        <a href="/accessibility" class="bottom-link">Accessibility</a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </footer>

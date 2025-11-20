@@ -1,0 +1,509 @@
+<%- layout("layouts/boilerplate") %>
+
+<div class="row mt-3">
+    <div class="col-md-10 offset-md-1">
+        <h3>Edit Profile</h3>
+        <p class="text-muted">Update your personal information and preferences</p>
+        <br />
+
+        <!-- Display validation errors -->
+        <% if (errors && errors.length > 0) { %>
+            <div class="alert alert-danger" role="alert">
+                <h6 class="alert-heading">Please fix the following errors:</h6>
+                <ul class="mb-0">
+                    <% errors.forEach(error => { %>
+                        <li><%= error.msg %></li>
+                    <% }); %>
+                </ul>
+            </div>
+        <% } %>
+
+        <form method="POST" action="/users/profile/edit" enctype="multipart/form-data" class="needs-validation" novalidate>
+            <!-- Avatar Section -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-user-circle me-2"></i>Profile Picture</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 text-center">
+                            <div class="avatar-upload">
+                                <div class="avatar-preview">
+                                    <% if (user.avatar) { %>
+                                        <img src="/uploads/avatars/<%= user.avatar %>" alt="Current Avatar" class="rounded-circle" style="width: 150px; height: 150px; object-fit: cover;" id="avatarPreview">
+                                    <% } else { %>
+                                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 150px; height: 150px; font-size: 3rem; font-weight: 600; margin: 0 auto;" id="avatarPreview">
+                                            <%= (user.username || user.email).charAt(0).toUpperCase() %>
+                                        </div>
+                                    <% } %>
+                                </div>
+                                <div class="avatar-edit">
+                                    <input type="file" id="avatarUpload" name="avatar" accept="image/*" class="d-none">
+                                    <label for="avatarUpload" class="btn btn-outline-primary btn-sm mt-3">
+                                        <i class="fas fa-camera me-1"></i>Change Photo
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-9">
+                            <p class="text-muted mb-2">Upload a clear photo of yourself. Images should be at least 200x200 pixels and under 5MB.</p>
+                            <small class="text-muted">Supported formats: JPEG, PNG, GIF</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Basic Information Section -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-user me-2"></i>Basic Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" class="form-control" value="<%= user.username %>" disabled>
+                            <small class="text-muted">Username cannot be changed</small>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="fullName" class="form-label">Full Name <span class="text-danger">*</span></label>
+                            <input name="fullName" type="text" class="form-control" 
+                                value="<%= oldInput.fullName || user.fullName || '' %>" 
+                                placeholder="Enter your full name" required>
+                            <div class="invalid-feedback">
+                                Please enter your full name.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+                            <input name="email" type="email" class="form-control" 
+                                value="<%= oldInput.email || user.email %>" 
+                                placeholder="Enter your email" required>
+                            <div class="invalid-feedback">
+                                Please enter a valid email address.
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="phone" class="form-label">Phone Number</label>
+                            <input name="phone" type="tel" class="form-control" 
+                                value="<%= oldInput.phone || user.phone || '' %>" 
+                                placeholder="Enter your phone number">
+                            <div class="invalid-feedback">
+                                Please enter a valid phone number.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bio Section -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-edit me-2"></i>Bio</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="bio" class="form-label">About You</label>
+                        <textarea name="bio" class="form-control" rows="4" 
+                            placeholder="Tell others about yourself, your interests, and what makes you unique..."
+                            maxlength="500"><%= oldInput.bio || user.bio || '' %></textarea>
+                        <div class="form-text">
+                            <span id="bioCount">0</span>/500 characters
+                        </div>
+                        <div class="invalid-feedback">
+                            Bio cannot exceed 500 characters.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Location Section -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-map-marker-alt me-2"></i>Location</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label for="address" class="form-label">Address</label>
+                            <input name="address" type="text" class="form-control" 
+                                value="<%= oldInput.address || user.location?.address || '' %>" 
+                                placeholder="Street address">
+                            <div class="invalid-feedback">
+                                Address cannot exceed 200 characters.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="city" class="form-label">City</label>
+                            <input name="city" type="text" class="form-control" 
+                                value="<%= oldInput.city || user.location?.city || '' %>" 
+                                placeholder="City">
+                            <div class="invalid-feedback">
+                                City cannot exceed 100 characters.
+                            </div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="country" class="form-label">Country</label>
+                            <input name="country" type="text" class="form-control" 
+                                value="<%= oldInput.country || user.location?.country || '' %>" 
+                                placeholder="Country">
+                            <div class="invalid-feedback">
+                                Country cannot exceed 100 characters.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Preferences Section -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-cog me-2"></i>Preferences</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="language" class="form-label">Language</label>
+                            <select name="language" class="form-select">
+                                <option value="en" <%= (oldInput.language || user.preferences?.language || 'en') === 'en' ? 'selected' : '' %>>English</option>
+                                <option value="es" <%= (oldInput.language || user.preferences?.language) === 'es' ? 'selected' : '' %>>Español</option>
+                                <option value="fr" <%= (oldInput.language || user.preferences?.language) === 'fr' ? 'selected' : '' %>>Français</option>
+                                <option value="de" <%= (oldInput.language || user.preferences?.language) === 'de' ? 'selected' : '' %>>Deutsch</option>
+                                <option value="it" <%= (oldInput.language || user.preferences?.language) === 'it' ? 'selected' : '' %>>Italiano</option>
+                                <option value="pt" <%= (oldInput.language || user.preferences?.language) === 'pt' ? 'selected' : '' %>>Português</option>
+                                <option value="ja" <%= (oldInput.language || user.preferences?.language) === 'ja' ? 'selected' : '' %>>日本語</option>
+                                <option value="ko" <%= (oldInput.language || user.preferences?.language) === 'ko' ? 'selected' : '' %>>한국어</option>
+                                <option value="zh" <%= (oldInput.language || user.preferences?.language) === 'zh' ? 'selected' : '' %>>中文</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="currency" class="form-label">Currency</label>
+                            <select name="currency" class="form-select">
+                                <option value="USD" <%= (oldInput.currency || user.preferences?.currency || 'USD') === 'USD' ? 'selected' : '' %>>USD ($)</option>
+                                <option value="EUR" <%= (oldInput.currency || user.preferences?.currency) === 'EUR' ? 'selected' : '' %>>EUR (€)</option>
+                                <option value="GBP" <%= (oldInput.currency || user.preferences?.currency) === 'GBP' ? 'selected' : '' %>>GBP (£)</option>
+                                <option value="JPY" <%= (oldInput.currency || user.preferences?.currency) === 'JPY' ? 'selected' : '' %>>JPY (¥)</option>
+                                <option value="AUD" <%= (oldInput.currency || user.preferences?.currency) === 'AUD' ? 'selected' : '' %>>AUD ($)</option>
+                                <option value="CAD" <%= (oldInput.currency || user.preferences?.currency) === 'CAD' ? 'selected' : '' %>>CAD ($)</option>
+                                <option value="CHF" <%= (oldInput.currency || user.preferences?.currency) === 'CHF' ? 'selected' : '' %>>CHF (Fr)</option>
+                                <option value="CNY" <%= (oldInput.currency || user.preferences?.currency) === 'CNY' ? 'selected' : '' %>>CNY (¥)</option>
+                                <option value="INR" <%= (oldInput.currency || user.preferences?.currency) === 'INR' ? 'selected' : '' %>>INR (₹)</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="timezone" class="form-label">Timezone</label>
+                            <select name="timezone" class="form-select">
+                                <option value="UTC" <%= (oldInput.timezone || user.preferences?.timezone || 'UTC') === 'UTC' ? 'selected' : '' %>>UTC</option>
+                                <option value="America/New_York" <%= (oldInput.timezone || user.preferences?.timezone) === 'America/New_York' ? 'selected' : '' %>>Eastern Time</option>
+                                <option value="America/Chicago" <%= (oldInput.timezone || user.preferences?.timezone) === 'America/Chicago' ? 'selected' : '' %>>Central Time</option>
+                                <option value="America/Denver" <%= (oldInput.timezone || user.preferences?.timezone) === 'America/Denver' ? 'selected' : '' %>>Mountain Time</option>
+                                <option value="America/Los_Angeles" <%= (oldInput.timezone || user.preferences?.timezone) === 'America/Los_Angeles' ? 'selected' : '' %>>Pacific Time</option>
+                                <option value="Europe/London" <%= (oldInput.timezone || user.preferences?.timezone) === 'Europe/London' ? 'selected' : '' %>>London</option>
+                                <option value="Europe/Paris" <%= (oldInput.timezone || user.preferences?.timezone) === 'Europe/Paris' ? 'selected' : '' %>>Paris</option>
+                                <option value="Asia/Tokyo" <%= (oldInput.timezone || user.preferences?.timezone) === 'Asia/Tokyo' ? 'selected' : '' %>>Tokyo</option>
+                                <option value="Asia/Shanghai" <%= (oldInput.timezone || user.preferences?.timezone) === 'Asia/Shanghai' ? 'selected' : '' %>>Shanghai</option>
+                                <option value="Asia/Kolkata" <%= (oldInput.timezone || user.preferences?.timezone) === 'Asia/Kolkata' ? 'selected' : '' %>>India (IST)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Verification Status Section -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-shield-alt me-2"></i>Verification Status</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="verification-item text-center">
+                                <div class="mb-2">
+                                    <% if (user.verification?.email?.verified) { %>
+                                        <i class="fas fa-check-circle text-success fa-2x"></i>
+                                    <% } else { %>
+                                        <i class="fas fa-times-circle text-danger fa-2x"></i>
+                                    <% } %>
+                                </div>
+                                <h6>Email Verified</h6>
+                                <% if (user.verification?.email?.verified) { %>
+                                    <small class="text-success">Verified on <%= new Date(user.verification.email.verifiedAt).toLocaleDateString() %></small>
+                                <% } else { %>
+                                    <small class="text-muted">Not verified</small>
+                                <% } %>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="verification-item text-center">
+                                <div class="mb-2">
+                                    <% if (user.verification?.phone?.verified) { %>
+                                        <i class="fas fa-check-circle text-success fa-2x"></i>
+                                    <% } else { %>
+                                        <i class="fas fa-times-circle text-danger fa-2x"></i>
+                                    <% } %>
+                                </div>
+                                <h6>Phone Verified</h6>
+                                <% if (user.verification?.phone?.verified) { %>
+                                    <small class="text-success">Verified on <%= new Date(user.verification.phone.verifiedAt).toLocaleDateString() %></small>
+                                <% } else { %>
+                                    <small class="text-muted">Not verified</small>
+                                <% } %>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="verification-item text-center">
+                                <div class="mb-2">
+                                    <% if (user.verification?.identity?.verified) { %>
+                                        <i class="fas fa-check-circle text-success fa-2x"></i>
+                                    <% } else { %>
+                                        <i class="fas fa-times-circle text-danger fa-2x"></i>
+                                    <% } %>
+                                </div>
+                                <h6>Identity Verified</h6>
+                                <% if (user.verification?.identity?.verified) { %>
+                                    <small class="text-success">Verified on <%= new Date(user.verification.identity.verifiedAt).toLocaleDateString() %></small>
+                                <% } else { %>
+                                    <small class="text-muted">Not verified</small>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Notification Preferences Section -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-bell me-2"></i>Notification Preferences</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>General Notifications</h6>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" name="emailNotifications" 
+                                    id="emailNotifications" <%= (oldInput.emailNotifications !== undefined ? oldInput.emailNotifications : user.notificationPreferences?.email) ? 'checked' : '' %>>
+                                <label class="form-check-label" for="emailNotifications">
+                                    Email Notifications
+                                </label>
+                            </div>
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" name="pushNotifications" 
+                                    id="pushNotifications" <%= (oldInput.pushNotifications !== undefined ? oldInput.pushNotifications : user.notificationPreferences?.push) ? 'checked' : '' %>>
+                                <label class="form-check-label" for="pushNotifications">
+                                    Push Notifications
+                                </label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Specific Notifications</h6>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" name="bookingNotifications" 
+                                    id="bookingNotifications" <%= (oldInput.bookingNotifications !== undefined ? oldInput.bookingNotifications : user.notificationPreferences?.types?.booking) ? 'checked' : '' %>>
+                                <label class="form-check-label" for="bookingNotifications">
+                                    Booking Updates
+                                </label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" name="messageNotifications" 
+                                    id="messageNotifications" <%= (oldInput.messageNotifications !== undefined ? oldInput.messageNotifications : user.notificationPreferences?.types?.message) ? 'checked' : '' %>>
+                                <label class="form-check-label" for="messageNotifications">
+                                    New Messages
+                                </label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" name="reviewNotifications" 
+                                    id="reviewNotifications" <%= (oldInput.reviewNotifications !== undefined ? oldInput.reviewNotifications : user.notificationPreferences?.types?.review) ? 'checked' : '' %>>
+                                <label class="form-check-label" for="reviewNotifications">
+                                    Reviews & Ratings
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Password Change Section -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-lock me-2"></i>Change Password</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="currentPassword" class="form-label">Current Password</label>
+                            <input name="currentPassword" type="password" class="form-control" 
+                                placeholder="Enter current password">
+                            <div class="invalid-feedback">
+                                Current password must be at least 6 characters.
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="newPassword" class="form-label">New Password</label>
+                            <input name="newPassword" type="password" class="form-control" 
+                                placeholder="Enter new password">
+                            <div class="invalid-feedback">
+                                New password must be at least 6 characters.
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="confirmPassword" class="form-label">Confirm New Password</label>
+                            <input name="confirmPassword" type="password" class="form-control" 
+                                placeholder="Confirm new password">
+                            <div class="invalid-feedback">
+                                Password confirmation does not match.
+                            </div>
+                        </div>
+                    </div>
+                    <small class="text-muted">Leave password fields empty if you don't want to change your password.</small>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="d-flex justify-content-between">
+                <a href="/users/profile/<%= user._id %>" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left me-1"></i>Cancel
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save me-1"></i>Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Avatar Preview Script -->
+<script>
+// Avatar upload preview
+document.getElementById('avatarUpload').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const preview = document.getElementById('avatarPreview');
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+// Bio character counter
+const bioTextarea = document.querySelector('textarea[name="bio"]');
+const bioCount = document.getElementById('bioCount');
+
+if (bioTextarea && bioCount) {
+    bioTextarea.addEventListener('input', function() {
+        const count = this.value.length;
+        bioCount.textContent = count;
+        
+        if (count > 450) {
+            bioCount.classList.add('text-warning');
+        } else {
+            bioCount.classList.remove('text-warning');
+        }
+        
+        if (count > 500) {
+            bioCount.classList.add('text-danger');
+            bioCount.classList.remove('text-warning');
+        } else {
+            bioCount.classList.remove('text-danger');
+        }
+    });
+}
+
+// Form validation
+(function() {
+    'use strict';
+    window.addEventListener('load', function() {
+        var forms = document.getElementsByClassName('needs-validation');
+        var validation = Array.prototype.filter.call(forms, function(form) {
+            form.addEventListener('submit', function(event) {
+                if (form.checkValidity() === false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    }, false);
+})();
+</script>
+
+<style>
+.avatar-upload {
+    text-align: center;
+}
+
+.avatar-preview img {
+    border: 3px solid #dee2e6;
+    transition: all 0.3s ease;
+}
+
+.avatar-preview img:hover {
+    border-color: var(--color-primary-500);
+}
+
+.verification-item {
+    padding: 1rem;
+    border-radius: var(--border-radius-base);
+    background-color: var(--color-bg-secondary);
+    transition: all 0.3s ease;
+}
+
+.verification-item:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+}
+
+.card {
+    border: 1px solid var(--color-border-light);
+    box-shadow: var(--shadow-sm);
+}
+
+.card-header {
+    background-color: var(--color-bg-secondary);
+    border-bottom: 1px solid var(--color-border-light);
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--color-primary-500);
+    box-shadow: 0 0 0 3px rgba(254, 66, 77, 0.1);
+}
+
+.btn-primary {
+    background-color: var(--color-primary-500);
+    border-color: var(--color-primary-500);
+    font-weight: var(--font-weight-medium);
+}
+
+.btn-primary:hover {
+    background-color: var(--color-primary-600);
+    border-color: var(--color-primary-600);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+}
+
+@media (max-width: 768px) {
+    .col-md-3, .col-md-9 {
+        text-align: center;
+    }
+    
+    .col-md-3 {
+        margin-bottom: 1rem;
+    }
+    
+    .d-flex.justify-content-between {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .d-flex.justify-content-between .btn {
+        width: 100%;
+    }
+}
+</style>

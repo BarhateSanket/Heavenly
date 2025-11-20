@@ -1,0 +1,143 @@
+<% layout('layouts/boilerplate') -%>
+<% block('head').append(`<title>Cancellation Policy - Heavenly</title>`) %>
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <h1 class="display-4 text-center mb-5">Cancellation Policy</h1>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h2 class="h3 mb-4">Flexible Cancellation Options</h2>
+                    <p class="lead mb-4">
+                        We understand that plans can change. That's why we offer flexible cancellation policies
+                        to give you peace of mind when booking your perfect getaway.
+                    </p>
+
+                    <div class="alert alert-info mb-4">
+                        <strong>Important:</strong> Cancellation policies vary by listing. Always check the specific
+                        policy for your booking before confirming.
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="fas fa-clock text-success me-3" style="font-size: 1.5rem;"></i>
+                                <h5 class="card-title mb-0">Free Cancellation</h5>
+                            </div>
+                            <p class="card-text">
+                                Cancel up to 24 hours before check-in and get a full refund.
+                                Perfect for last-minute changes.
+                            </p>
+                            <div class="text-muted small">
+                                <strong>Refund:</strong> 100% of booking amount
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="fas fa-calendar-check text-warning me-3" style="font-size: 1.5rem;"></i>
+                                <h5 class="card-title mb-0">Moderate</h5>
+                            </div>
+                            <p class="card-text">
+                                Cancel up to 5 days before check-in for a full refund.
+                                Ideal for planned trips.
+                            </p>
+                            <div class="text-muted small">
+                                <strong>Refund:</strong> 100% if cancelled 5+ days before
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="fas fa-calendar-times text-danger me-3" style="font-size: 1.5rem;"></i>
+                                <h5 class="card-title mb-0">Strict</h5>
+                            </div>
+                            <p class="card-text">
+                                Cancel up to 30 days before check-in for a full refund.
+                                Best for long-term planning.
+                            </p>
+                            <div class="text-muted small">
+                                <strong>Refund:</strong> 50% if cancelled 7-30 days before
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="fas fa-ban text-dark me-3" style="font-size: 1.5rem;"></i>
+                                <h5 class="card-title mb-0">Non-refundable</h5>
+                            </div>
+                            <p class="card-text">
+                                No refunds after booking. Best rates for confirmed plans.
+                            </p>
+                            <div class="text-muted small">
+                                <strong>Refund:</strong> None after booking
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h3 class="h4 mb-3">How to Cancel Your Booking</h3>
+                    <ol>
+                        <li class="mb-3">Log in to your Heavenly account</li>
+                        <li class="mb-3">Go to your bookings dashboard</li>
+                        <li class="mb-3">Find the booking you want to cancel</li>
+                        <li class="mb-3">Click "Cancel booking" and follow the prompts</li>
+                        <li class="mb-3">Receive confirmation of cancellation and refund details</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h3 class="h4 mb-3">Special Circumstances</h3>
+                    <p class="mb-3">
+                        In cases of emergencies or extenuating circumstances, we may offer exceptions to our
+                        standard cancellation policies. Contact our support team to discuss your situation.
+                    </p>
+                    <div class="alert alert-warning">
+                        <strong>Note:</strong> Force majeure events (natural disasters, government restrictions, etc.)
+                        may qualify for special consideration.
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h3 class="h4 mb-3">Need Help?</h3>
+                    <p class="mb-3">
+                        If you have questions about cancellation policies or need assistance with a booking,
+                        our support team is here to help.
+                    </p>
+                    <div class="d-flex gap-3">
+                        <a href="/contact" class="btn btn-primary">
+                            <i class="fas fa-envelope me-2"></i>Contact Support
+                        </a>
+                        <a href="/help-center" class="btn btn-outline-primary">
+                            <i class="fas fa-question-circle me-2"></i>Help Center
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

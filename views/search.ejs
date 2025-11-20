@@ -4,27 +4,29 @@
     <!-- Header Section -->
     <div class="row mb-4">
         <div class="col-12">
-            <h1 class="mb-3">Find your perfect stay</h1>
-            <p class="text-muted">Discover amazing places to stay around the world</p>
+            <h1 class="mb-3">Search Results</h1>
+            <p class="text-muted">Find your perfect stay with advanced filters</p>
         </div>
     </div>
 
-    <!-- Search Bar -->
+    <!-- Search Form -->
     <div class="row mb-4">
         <div class="col-12">
-            <form method="GET" action="/listings" class="search-form">
+            <form method="GET" action="/search" class="search-form">
                 <div class="row g-3">
-                    <div class="col-lg-6 position-relative">
-                        <input type="text" name="search" id="search-input" class="form-control form-control-lg" placeholder="Where are you going?" value="<%= typeof search !== 'undefined' ? search : '' %>" autocomplete="off">
-                        <div id="autocomplete-results" class="autocomplete-results"></div>
+                    <div class="col-lg-3">
+                        <input type="text" name="location" class="form-control form-control-lg" placeholder="Where are you going?" value="<%= typeof location !== 'undefined' ? location : '' %>">
                     </div>
                     <div class="col-lg-2">
-                        <input type="number" name="minPrice" class="form-control form-control-lg" placeholder="Min Price" value="<%= typeof minPrice !== 'undefined' ? minPrice : '' %>">
+                        <input type="date" name="checkIn" class="form-control form-control-lg" placeholder="Check-in" value="<%= typeof checkIn !== 'undefined' ? checkIn : '' %>">
                     </div>
                     <div class="col-lg-2">
-                        <input type="number" name="maxPrice" class="form-control form-control-lg" placeholder="Max Price" value="<%= typeof maxPrice !== 'undefined' ? maxPrice : '' %>">
+                        <input type="date" name="checkOut" class="form-control form-control-lg" placeholder="Check-out" value="<%= typeof checkOut !== 'undefined' ? checkOut : '' %>">
                     </div>
                     <div class="col-lg-2">
+                        <input type="number" name="guests" class="form-control form-control-lg" placeholder="Guests" min="1" value="<%= typeof guests !== 'undefined' ? guests : '' %>">
+                    </div>
+                    <div class="col-lg-3">
                         <button type="submit" class="btn btn-primary btn-lg w-100">
                             <i class="fas fa-search me-2"></i>Search
                         </button>
@@ -41,7 +43,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h5 class="mb-0">Filters</h5>
-                        <a href="/listings" class="text-decoration-none small">Clear all</a>
+                        <a href="/search" class="text-decoration-none small">Clear all</a>
                     </div>
 
                     <!-- Price Range -->
@@ -50,39 +52,12 @@
                         <div class="price-inputs">
                             <div class="input-group mb-2">
                                 <span class="input-group-text">₹</span>
-                                <input type="number" class="form-control" placeholder="Minimum" name="minPrice" form="filter-form">
+                                <input type="number" class="form-control" placeholder="Minimum" name="minPrice" form="filter-form" value="<%= typeof minPrice !== 'undefined' ? minPrice : '' %>">
                             </div>
                             <div class="input-group">
                                 <span class="input-group-text">₹</span>
-                                <input type="number" class="form-control" placeholder="Maximum" name="maxPrice" form="filter-form">
+                                <input type="number" class="form-control" placeholder="Maximum" name="maxPrice" form="filter-form" value="<%= typeof maxPrice !== 'undefined' ? maxPrice : '' %>">
                             </div>
-                        </div>
-                    </div>
-
-                    <!-- Property Type -->
-                    <div class="filter-section mb-4">
-                        <h6 class="filter-title">Property type</h6>
-                        <div class="property-types">
-                            <label class="filter-checkbox">
-                                <input type="checkbox" name="type" value="apartment" form="filter-form">
-                                <span class="checkmark"></span>
-                                Apartments
-                            </label>
-                            <label class="filter-checkbox">
-                                <input type="checkbox" name="type" value="house" form="filter-form">
-                                <span class="checkmark"></span>
-                                Houses
-                            </label>
-                            <label class="filter-checkbox">
-                                <input type="checkbox" name="type" value="villa" form="filter-form">
-                                <span class="checkmark"></span>
-                                Villas
-                            </label>
-                            <label class="filter-checkbox">
-                                <input type="checkbox" name="type" value="cabin" form="filter-form">
-                                <span class="checkmark"></span>
-                                Cabins
-                            </label>
                         </div>
                     </div>
 
@@ -91,75 +66,40 @@
                         <h6 class="filter-title">Amenities</h6>
                         <div class="amenities">
                             <label class="filter-checkbox">
-                                <input type="checkbox" name="amenity" value="wifi" form="filter-form">
+                                <input type="checkbox" name="amenities" value="wifi" form="filter-form" <%= amenities && amenities.includes('wifi') ? 'checked' : '' %>>
                                 <span class="checkmark"></span>
                                 WiFi
                             </label>
                             <label class="filter-checkbox">
-                                <input type="checkbox" name="amenity" value="pool" form="filter-form">
+                                <input type="checkbox" name="amenities" value="pool" form="filter-form" <%= amenities && amenities.includes('pool') ? 'checked' : '' %>>
                                 <span class="checkmark"></span>
                                 Pool
                             </label>
                             <label class="filter-checkbox">
-                                <input type="checkbox" name="amenity" value="parking" form="filter-form">
+                                <input type="checkbox" name="amenities" value="parking" form="filter-form" <%= amenities && amenities.includes('parking') ? 'checked' : '' %>>
                                 <span class="checkmark"></span>
                                 Free parking
                             </label>
                             <label class="filter-checkbox">
-                                <input type="checkbox" name="amenity" value="kitchen" form="filter-form">
+                                <input type="checkbox" name="amenities" value="kitchen" form="filter-form" <%= amenities && amenities.includes('kitchen') ? 'checked' : '' %>>
                                 <span class="checkmark"></span>
                                 Kitchen
                             </label>
                             <label class="filter-checkbox">
-                                <input type="checkbox" name="amenity" value="aircon" form="filter-form">
+                                <input type="checkbox" name="amenities" value="aircon" form="filter-form" <%= amenities && amenities.includes('aircon') ? 'checked' : '' %>>
                                 <span class="checkmark"></span>
                                 Air conditioning
                             </label>
                         </div>
                     </div>
 
-                    <!-- Premium & Featured -->
-                    <div class="filter-section mb-4">
-                        <h6 class="filter-title">Listing Type</h6>
-                        <div class="listing-types">
-                            <label class="filter-checkbox">
-                                <input type="checkbox" name="premium" value="true" form="filter-form" <%= premium === 'true' ? 'checked' : '' %>>
-                                <span class="checkmark"></span>
-                                Premium listings
-                            </label>
-                            <label class="filter-checkbox">
-                                <input type="checkbox" name="featured" value="true" form="filter-form" <%= featured === 'true' ? 'checked' : '' %>>
-                                <span class="checkmark"></span>
-                                Featured listings
-                            </label>
-                        </div>
-                    </div>
-
-                    <!-- Rating -->
-                    <div class="filter-section mb-4">
-                        <h6 class="filter-title">Minimum rating</h6>
-                        <div class="rating-filter">
-                            <label class="filter-radio">
-                                <input type="radio" name="rating" value="4.5" form="filter-form">
-                                <span class="radiomark"></span>
-                                4.5+ stars
-                            </label>
-                            <label class="filter-radio">
-                                <input type="radio" name="rating" value="4.0" form="filter-form">
-                                <span class="radiomark"></span>
-                                4.0+ stars
-                            </label>
-                            <label class="filter-radio">
-                                <input type="radio" name="rating" value="3.5" form="filter-form">
-                                <span class="radiomark"></span>
-                                3.5+ stars
-                            </label>
-                        </div>
-                    </div>
-
                     <!-- Apply Filters Button -->
-                    <form id="filter-form" method="GET" action="/listings" class="d-none">
+                    <form id="filter-form" method="GET" action="/search" class="d-none">
                         <!-- Hidden inputs will be populated by JavaScript -->
+                        <input type="hidden" name="location" value="<%= typeof location !== 'undefined' ? location : '' %>">
+                        <input type="hidden" name="checkIn" value="<%= typeof checkIn !== 'undefined' ? checkIn : '' %>">
+                        <input type="hidden" name="checkOut" value="<%= typeof checkOut !== 'undefined' ? checkOut : '' %>">
+                        <input type="hidden" name="guests" value="<%= typeof guests !== 'undefined' ? guests : '' %>">
                     </form>
                     <button type="submit" form="filter-form" class="btn btn-primary w-100">
                         Apply Filters
@@ -171,13 +111,11 @@
         <!-- Listings Grid -->
         <div class="col-lg-9">
             <div class="d-flex justify-content-between align-items-center mb-3">
-                <p class="text-muted mb-0"><%= listings.length %> stays</p>
+                <p class="text-muted mb-0"><%= listings.length %> stays found</p>
                 <div class="d-flex align-items-center gap-2">
                     <span class="text-muted small">Sort by:</span>
                     <select class="form-select form-select-sm" id="sort-select" style="width: auto;">
                         <option value="recommended" <%= sort === 'recommended' ? 'selected' : '' %>>Recommended</option>
-                        <option value="featured" <%= sort === 'featured' ? 'selected' : '' %>>Featured</option>
-                        <option value="premium" <%= sort === 'premium' ? 'selected' : '' %>>Premium</option>
                         <option value="price-low" <%= sort === 'price-low' ? 'selected' : '' %>>Price: Low to High</option>
                         <option value="price-high" <%= sort === 'price-high' ? 'selected' : '' %>>Price: High to Low</option>
                         <option value="rating" <%= sort === 'rating' ? 'selected' : '' %>>Rating</option>
@@ -260,32 +198,45 @@
         </div>
     </div>
 
+    <!-- Pagination -->
+    <% if (typeof totalPages !== 'undefined' && totalPages > 1) { %>
+    <div class="d-flex justify-content-center mt-4">
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                <% if (currentPage > 1) { %>
+                    <li class="page-item">
+                        <a class="page-link" href="?page=<%= currentPage - 1 %><%= typeof location !== 'undefined' ? '&location=' + encodeURIComponent(location) : '' %><%= typeof checkIn !== 'undefined' ? '&checkIn=' + checkIn : '' %><%= typeof checkOut !== 'undefined' ? '&checkOut=' + checkOut : '' %><%= typeof minPrice !== 'undefined' ? '&minPrice=' + minPrice : '' %><%= typeof maxPrice !== 'undefined' ? '&maxPrice=' + maxPrice : '' %><%= typeof guests !== 'undefined' ? '&guests=' + guests : '' %>">Previous</a>
+                    </li>
+                <% } %>
 
+                <% for (let i = Math.max(1, currentPage - 2); i <= Math.min(totalPages, currentPage + 2); i++) { %>
+                    <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                        <a class="page-link" href="?page=<%= i %><%= typeof location !== 'undefined' ? '&location=' + encodeURIComponent(location) : '' %><%= typeof checkIn !== 'undefined' ? '&checkIn=' + checkIn : '' %><%= typeof checkOut !== 'undefined' ? '&checkOut=' + checkOut : '' %><%= typeof minPrice !== 'undefined' ? '&minPrice=' + minPrice : '' %><%= typeof maxPrice !== 'undefined' ? '&maxPrice=' + maxPrice : '' %><%= typeof guests !== 'undefined' ? '&guests=' + guests : '' %>"><%= i %></a>
+                    </li>
+                <% } %>
+
+                <% if (currentPage < totalPages) { %>
+                    <li class="page-item">
+                        <a class="page-link" href="?page=<%= currentPage + 1 %><%= typeof location !== 'undefined' ? '&location=' + encodeURIComponent(location) : '' %><%= typeof checkIn !== 'undefined' ? '&checkIn=' + checkIn : '' %><%= typeof checkOut !== 'undefined' ? '&checkOut=' + checkOut : '' %><%= typeof minPrice !== 'undefined' ? '&minPrice=' + minPrice : '' %><%= typeof maxPrice !== 'undefined' ? '&maxPrice=' + maxPrice : '' %><%= typeof guests !== 'undefined' ? '&guests=' + guests : '' %>">Next</a>
+                    </li>
+                <% } %>
+            </ul>
+        </nav>
+    </div>
+    <% } %>
 </div>
 
-<!-- Pagination -->
-<% if (typeof totalPages !== 'undefined' && totalPages > 1) { %>
-<div class="d-flex justify-content-center mt-4">
-    <nav aria-label="Page navigation">
-        <ul class="pagination">
-            <% if (currentPage > 1) { %>
-                <li class="page-item">
-                    <a class="page-link" href="?page=<%= currentPage - 1 %><%= typeof search !== 'undefined' ? '&search=' + encodeURIComponent(search) : '' %><%= typeof minPrice !== 'undefined' ? '&minPrice=' + minPrice : '' %><%= typeof maxPrice !== 'undefined' ? '&maxPrice=' + maxPrice : '' %>">Previous</a>
-                </li>
-            <% } %>
-
-            <% for (let i = Math.max(1, currentPage - 2); i <= Math.min(totalPages, currentPage + 2); i++) { %>
-                <li class="page-item <%= i === currentPage ? 'active' : '' %>">
-                    <a class="page-link" href="?page=<%= i %><%= typeof search !== 'undefined' ? '&search=' + encodeURIComponent(search) : '' %><%= typeof minPrice !== 'undefined' ? '&minPrice=' + minPrice : '' %><%= typeof maxPrice !== 'undefined' ? '&maxPrice=' + maxPrice : '' %>"><%= i %></a>
-                </li>
-            <% } %>
-
-            <% if (currentPage < totalPages) { %>
-                <li class="page-item">
-                    <a class="page-link" href="?page=<%= currentPage + 1 %><%= typeof search !== 'undefined' ? '&search=' + encodeURIComponent(search) : '' %><%= typeof minPrice !== 'undefined' ? '&minPrice=' + minPrice : '' %><%= typeof maxPrice !== 'undefined' ? '&maxPrice=' + maxPrice : '' %>">Next</a>
-                </li>
-            <% } %>
-        </ul>
-    </nav>
-</div>
-<% } %>
+<!-- Listings Data for Map (if needed) -->
+<script>
+    window.listingsData = <%- JSON.stringify(listings.map(listing => ({
+        _id: listing._id,
+        title: listing.title,
+        location: listing.location,
+        country: listing.country,
+        price: listing.price,
+        image: listing.image,
+        geometry: listing.geometry,
+        isFeatured: listing.isFeatured,
+        premiumTier: listing.premiumTier
+    }))) %>;
+</script>

@@ -37,11 +37,22 @@
 
                 <% if (isOwnProfile) { %>
                     <div class="mt-3">
-                        <form action="/users/privacy/toggle" method="POST" class="d-inline">
-                            <button type="submit" class="btn btn-outline-secondary btn-sm">
-                                <%= user.isPrivate ? 'Make Public' : 'Make Private' %>
-                            </button>
-                        </form>
+                        <div class="d-flex flex-wrap gap-2">
+                            <a href="/users/profile/edit" class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-edit me-1"></i>Edit Profile
+                            </a>
+                            <a href="/users/billing" class="btn btn-outline-success btn-sm">
+                                <i class="fas fa-receipt me-1"></i>Billing History
+                            </a>
+                            <a href="/users/settings" class="btn btn-outline-secondary btn-sm">
+                                <i class="fas fa-cog me-1"></i>Settings
+                            </a>
+                            <form action="/users/privacy/toggle" method="POST" class="d-inline">
+                                <button type="submit" class="btn btn-outline-info btn-sm">
+                                    <%= user.isPrivate ? 'Make Public' : 'Make Private' %>
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 <% } else if (typeof isFollowing !== 'undefined') { %>
                     <div class="mt-3">

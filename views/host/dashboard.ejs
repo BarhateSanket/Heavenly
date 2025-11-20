@@ -1,0 +1,706 @@
+<% layout("layouts/boilerplate") %>
+
+<!-- Include Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="stylesheet" href="/css/host-dashboard.css">
+
+<div class="host-dashboard">
+    <!-- Host Dashboard Header -->
+    <div class="dashboard-header bg-primary text-white py-4 mb-4">
+        <div class="container-fluid">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="dashboard-title mb-2">
+                        <i class="fas fa-chart-line me-2"></i>
+                        Host Dashboard
+                    </h1>
+                    <p class="dashboard-subtitle mb-0">
+                        Manage your listings, bookings, and earnings
+                    </p>
+                </div>
+                <div class="col-md-4 text-end">
+                    <div class="host-status">
+                        <% if (analytics.isSuperhost) { %>
+                            <span class="badge bg-warning text-dark">
+                                <i class="fas fa-crown me-1"></i>Superhost
+                            </span>
+                        <% } else { %>
+                            <span class="badge bg-light text-dark">
+                                <i class="fas fa-home me-1"></i>Host
+                            </span>
+                        <% } %>
+                        <div class="host-score mt-2">
+                            Host Score: <%= analytics.hostScore %>/100
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="quick-actions mb-4">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="d-flex flex-wrap gap-2">
+                        <a href="/listings/new" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Add New Listing
+                        </a>
+                        <button class="btn btn-outline-primary" onclick="showBulkPricing()">
+                            <i class="fas fa-tags"></i> Bulk Pricing
+                        </button>
+                        <button class="btn btn-outline-primary" onclick="showCalendarView()">
+                            <i class="fas fa-calendar"></i> Calendar View
+                        </button>
+                        <a href="/messages" class="btn btn-outline-primary position-relative">
+                            <i class="fas fa-envelope"></i> Messages
+                            <span class="badge bg-danger ms-1" id="unreadMessagesBadge">0</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Key Metrics Cards -->
+    <div class="metrics-section mb-4">
+        <div class="container-fluid">
+            <div class="row g-4">
+                <div class="col-lg-3 col-md-6">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body text-center">
+                            <div class="metric-icon text-success mb-3">
+                                <i class="fas fa-money-bill-wave fa-2x"></i>
+                            </div>
+                            <h3 class="metric-value text-success">$<%= analytics.totalEarnings.toLocaleString() %></h3>
+                            <p class="metric-label text-muted">Total Earnings</p>
+                            <small class="text-success">
+                                <i class="fas fa-arrow-up"></i> +$<%= analytics.monthlyEarnings.toLocaleString() %> this month
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body text-center">
+                            <div class="metric-icon text-primary mb-3">
+                                <i class="fas fa-home fa-2x"></i>
+                            </div>
+                            <h3 class="metric-value text-primary"><%= analytics.totalListings %></h3>
+                            <p class="metric-label text-muted">Active Listings</p>
+                            <small class="text-muted">
+                                <%= analytics.completedBookings %> bookings completed
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body text-center">
+                            <div class="metric-icon text-warning mb-3">
+                                <i class="fas fa-star fa-2x"></i>
+                            </div>
+                            <h3 class="metric-value text-warning"><%= analytics.averageRating.toFixed(1) %></h3>
+                            <p class="metric-label text-muted">Average Rating</p>
+                            <small class="text-muted">
+                                Based on guest reviews
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body text-center">
+                            <div class="metric-icon text-info mb-3">
+                                <i class="fas fa-percentage fa-2x"></i>
+                            </div>
+                            <h3 class="metric-value text-info"><%= analytics.occupancyRate %>%</h3>
+                            <p class="metric-label text-muted">Occupancy Rate</p>
+                            <small class="text-muted">
+                                Last 12 months
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="charts-section mb-4">
+        <div class="container-fluid">
+            <div class="row g-4">
+                <!-- Earnings Chart -->
+                <div class="col-lg-8">
+                    <div class="card shadow-sm">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-chart-area me-2"></i>Earnings Overview
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="earningsChart" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Booking Trends -->
+                <div class="col-lg-4">
+                    <div class="card shadow-sm">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-chart-bar me-2"></i>Booking Trends
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <canvas id="bookingsChart" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Listings Management -->
+    <div class="listings-section mb-4">
+        <div class="container-fluid">
+            <div class="card shadow-sm">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-list me-2"></i>Your Listings
+                    </h5>
+                    <a href="/listings/new" class="btn btn-sm btn-primary">
+                        <i class="fas fa-plus"></i> Add Listing
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Listing</th>
+                                    <th>Status</th>
+                                    <th>Bookings</th>
+                                    <th>Revenue</th>
+                                    <th>Rating</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if (listings && listings.length > 0) { %>
+                                    <% listings.forEach(listing => { 
+                                        const listingBookings = allBookings.filter(booking => 
+                                            booking.listing._id.toString() === listing._id.toString()
+                                        );
+                                        const listingRevenue = listingBookings
+                                            .filter(booking => booking.status === 'confirmed')
+                                            .reduce((sum, booking) => sum + booking.totalPrice, 0);
+                                        const listingRating = listing.reviews && listing.reviews.length > 0 
+                                            ? (listing.reviews.reduce((sum, review) => sum + review.rating, 0) / listing.reviews.length)
+                                            : 0;
+                                    %>
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <img src="<%= listing.image %>" alt="<%= listing.title %>" 
+                                                         class="listing-thumbnail me-3" style="width: 60px; height: 60px; object-fit: cover;">
+                                                    <div>
+                                                        <h6 class="mb-0"><%= listing.title %></h6>
+                                                        <small class="text-muted"><%= listing.location %></small>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-success">Active</span>
+                                            </td>
+                                            <td>
+                                                <strong><%= listingBookings.length %></strong>
+                                                <small class="text-muted">bookings</small>
+                                            </td>
+                                            <td>
+                                                <strong>$<%= listingRevenue.toLocaleString() %></strong>
+                                            </td>
+                                            <td>
+                                                <div class="d-flex align-items-center">
+                                                    <span class="me-1"><%= listingRating.toFixed(1) %></span>
+                                                    <div class="stars">
+                                                        <% for(let i = 1; i <= 5; i++) { %>
+                                                            <i class="fas fa-star <%= i <= Math.round(listingRating) ? 'text-warning' : 'text-muted' %>" style="font-size: 0.8rem;"></i>
+                                                        <% } %>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group btn-group-sm">
+                                                    <a href="/listings/<%= listing._id %>" class="btn btn-outline-primary" title="View">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                    <a href="/listings/<%= listing._id %>/edit" class="btn btn-outline-secondary" title="Edit">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    <button class="btn btn-outline-info" onclick="managePricing('<%= listing._id %>')" title="Pricing">
+                                                        <i class="fas fa-dollar-sign"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    <% }) %>
+                                <% } else { %>
+                                    <tr>
+                                        <td colspan="6" class="text-center py-4">
+                                            <div class="text-muted">
+                                                <i class="fas fa-home fa-2x mb-3"></i>
+                                                <h5>No listings yet</h5>
+                                                <p>Start hosting by creating your first listing!</p>
+                                                <a href="/listings/new" class="btn btn-primary">Create Your First Listing</a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upcoming Bookings -->
+    <div class="bookings-section mb-4">
+        <div class="container-fluid">
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-calendar-check me-2"></i>Upcoming Bookings (Next 30 Days)
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <% if (upcomingBookings && upcomingBookings.length > 0) { %>
+                        <div class="row g-3">
+                            <% upcomingBookings.forEach(booking => { %>
+                                <div class="col-lg-4 col-md-6">
+                                    <div class="booking-card border rounded p-3">
+                                        <div class="booking-header mb-3">
+                                            <img src="<%= booking.listing.image %>" alt="<%= booking.listing.title %>" 
+                                                 class="booking-listing-image w-100 mb-2" style="height: 120px; object-fit: cover;">
+                                            <div class="booking-info">
+                                                <h6 class="booking-title"><%= booking.listing.title %></h6>
+                                                <p class="booking-location text-muted small"><%= booking.listing.location %></p>
+                                            </div>
+                                        </div>
+                                        <div class="booking-details">
+                                            <div class="booking-guest mb-2">
+                                                <i class="fas fa-user me-2"></i>
+                                                <span><%= booking.guest.username %></span>
+                                            </div>
+                                            <div class="booking-dates mb-2">
+                                                <small class="text-muted d-block">Check-in: <%= new Date(booking.checkIn).toLocaleDateString() %></small>
+                                                <small class="text-muted d-block">Check-out: <%= new Date(booking.checkOut).toLocaleDateString() %></small>
+                                            </div>
+                                            <div class="booking-guests mb-2">
+                                                <i class="fas fa-users me-2"></i>
+                                                <span><%= booking.guests %> guest<%= booking.guests > 1 ? 's' : '' %></span>
+                                            </div>
+                                            <div class="booking-total mb-3">
+                                                <strong>$<%= booking.totalPrice.toLocaleString() %></strong>
+                                            </div>
+                                        </div>
+                                        <div class="booking-actions d-grid gap-2">
+                                            <button class="btn btn-sm btn-outline-primary" onclick="contactGuest('<%= booking.guest._id %>')">
+                                                <i class="fas fa-envelope"></i> Contact Guest
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            <% }) %>
+                        </div>
+                    <% } else { %>
+                        <div class="text-center py-5">
+                            <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
+                            <h5>No upcoming bookings</h5>
+                            <p class="text-muted">You don't have any bookings in the next 30 days.</p>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bulk Pricing Modal -->
+<div class="modal fade" id="bulkPricingModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-tags me-2"></i>Bulk Pricing Management
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    Select listings and apply pricing changes across all selected properties.
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Select Listings:</label>
+                    <div class="listing-selector">
+                        <% if (listings && listings.length > 0) { %>
+                            <% listings.forEach(listing => { %>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="<%= listing._id %>" id="listing_<%= listing._id %>">
+                                    <label class="form-check-label" for="listing_<%= listing._id %>">
+                                        <%= listing.title %> - Current: $<%= listing.price %>
+                                    </label>
+                                </div>
+                            <% }) %>
+                        <% } else { %>
+                            <p class="text-muted">No listings available for bulk pricing.</p>
+                        <% } %>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class="form-label">Pricing Action:</label>
+                        <select class="form-select" id="pricingAction">
+                            <option value="percentage_increase">Increase by %</option>
+                            <option value="percentage_decrease">Decrease by %</option>
+                            <option value="fixed_increase">Increase by $</option>
+                            <option value="fixed_decrease">Decrease by $</option>
+                            <option value="set_fixed">Set to fixed amount</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Value:</label>
+                        <input type="number" class="form-control" id="pricingValue" placeholder="Enter value">
+                    </div>
+                </div>
+
+                <div class="mt-3">
+                    <label class="form-label">Preview Changes:</label>
+                    <div id="pricingPreview" class="border rounded p-3" style="background-color: #f8f9fa;">
+                        <small class="text-muted">Select listings and enter a value to see preview</small>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="applyBulkPricing()">Apply Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Calendar View Modal -->
+<div class="modal fade" id="calendarModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-calendar me-2"></i>Calendar View - Booking Management
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="calendar-controls mb-3">
+                    <div class="row align-items-center">
+                        <div class="col-md-4">
+                            <select class="form-select" id="calendarListing">
+                                <option value="">All Listings</option>
+                                <% if (listings && listings.length > 0) { %>
+                                    <% listings.forEach(listing => { %>
+                                        <option value="<%= listing._id %>"><%= listing.title %></option>
+                                    <% }) %>
+                                <% } %>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="btn-group" role="group">
+                                <button type="button" class="btn btn-outline-primary" onclick="previousMonth()">
+                                    <i class="fas fa-chevron-left"></i>
+                                </button>
+                                <button type="button" class="btn btn-outline-primary" disabled>
+                                    <span id="currentMonth"></span>
+                                </button>
+                                <button type="button" class="btn btn-outline-primary" onclick="nextMonth()">
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-end">
+                            <button type="button" class="btn btn-success btn-sm" onclick="addAvailability()">
+                                <i class="fas fa-plus"></i> Add Availability
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="calendar-grid" id="calendarGrid">
+                    <div class="text-center py-5">
+                        <i class="fas fa-calendar-alt fa-3x text-muted mb-3"></i>
+                        <h5>Calendar View</h5>
+                        <p class="text-muted">Interactive calendar showing bookings and availability will be displayed here.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Host Dashboard JavaScript -->
+<script>
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Bootstrap modals
+    if (typeof bootstrap !== 'undefined') {
+        const bulkPricingModal = new bootstrap.Modal(document.getElementById('bulkPricingModal'));
+        const calendarModal = new bootstrap.Modal(document.getElementById('calendarModal'));
+        
+        // Make modal instances globally available
+        window.bulkPricingModal = bulkPricingModal;
+        window.calendarModal = calendarModal;
+    }
+    
+    // Set current month
+    updateCurrentMonth();
+    
+    // Initialize charts if Chart.js is available
+    if (typeof Chart !== 'undefined') {
+        initializeCharts();
+    }
+});
+
+// Host dashboard functions
+function showBulkPricing() {
+    if (window.bulkPricingModal) {
+        window.bulkPricingModal.show();
+    } else {
+        alert('Bulk pricing feature');
+    }
+}
+
+function showCalendarView() {
+    if (window.calendarModal) {
+        window.calendarModal.show();
+    } else {
+        alert('Calendar view feature');
+    }
+}
+
+function managePricing(listingId) {
+    window.location.href = '/listings/' + listingId + '/edit#pricing';
+}
+
+function contactGuest(guestId) {
+    window.location.href = '/messages?user=' + guestId;
+}
+
+// Bulk pricing functions
+function applyBulkPricing() {
+    const selectedListings = [];
+    const pricingAction = document.getElementById('pricingAction').value;
+    const pricingValue = parseFloat(document.getElementById('pricingValue').value);
+    
+    // Get selected listings
+    document.querySelectorAll('.listing-selector input[type="checkbox"]:checked').forEach(checkbox => {
+        selectedListings.push(checkbox.value);
+    });
+    
+    if (selectedListings.length === 0) {
+        alert('Please select at least one listing.');
+        return;
+    }
+    
+    if (!pricingValue || pricingValue <= 0) {
+        alert('Please enter a valid pricing value.');
+        return;
+    }
+    
+    if (confirm(`Apply ${pricingAction.replace('_', ' ')} of ${pricingValue} to ${selectedListings.length} listing(s)?`)) {
+        // Simulate API call
+        setTimeout(() => {
+            alert(`Bulk pricing applied to ${selectedListings.length} listing(s) successfully!`);
+            if (window.bulkPricingModal) {
+                window.bulkPricingModal.hide();
+            }
+            
+            // Reset form
+            document.getElementById('pricingAction').value = 'percentage_increase';
+            document.getElementById('pricingValue').value = '';
+            document.querySelectorAll('.listing-selector input[type="checkbox"]').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            updatePricingPreview();
+        }, 1000);
+    }
+}
+
+// Update pricing preview
+function updatePricingPreview() {
+    const selectedListings = [];
+    const pricingAction = document.getElementById('pricingAction').value;
+    const pricingValue = parseFloat(document.getElementById('pricingValue').value);
+    
+    // Get selected listings data from DOM
+    document.querySelectorAll('.listing-selector input[type="checkbox"]:checked').forEach(checkbox => {
+        const labelText = checkbox.nextElementSibling.textContent;
+        const title = labelText.split(' - Current: $')[0];
+        const price = parseFloat(labelText.split('$')[1]);
+        selectedListings.push({
+            id: checkbox.value,
+            title: title,
+            price: price
+        });
+    });
+    
+    const previewDiv = document.getElementById('pricingPreview');
+    
+    if (selectedListings.length === 0 || !pricingValue) {
+        previewDiv.innerHTML = '<small class="text-muted">Select listings and enter a value to see preview</small>';
+        return;
+    }
+    
+    let previewHTML = '<h6>Preview Changes:</h6><div class="list-group list-group-flush">';
+    selectedListings.forEach(listing => {
+        let newPrice = listing.price;
+        let changeText = '';
+        
+        switch (pricingAction) {
+            case 'percentage_increase':
+                newPrice = listing.price * (1 + pricingValue / 100);
+                changeText = `+${pricingValue}% → $${newPrice.toFixed(2)}`;
+                break;
+            case 'percentage_decrease':
+                newPrice = listing.price * (1 - pricingValue / 100);
+                changeText = `-${pricingValue}% → $${newPrice.toFixed(2)}`;
+                break;
+            case 'fixed_increase':
+                newPrice = listing.price + pricingValue;
+                changeText = `+$${pricingValue} → $${newPrice.toFixed(2)}`;
+                break;
+            case 'fixed_decrease':
+                newPrice = listing.price - pricingValue;
+                changeText = `-$${pricingValue} → $${newPrice.toFixed(2)}`;
+                break;
+            case 'set_fixed':
+                newPrice = pricingValue;
+                changeText = `→ $${newPrice.toFixed(2)}`;
+                break;
+        }
+        
+        previewHTML += `
+            <div class="list-group-item d-flex justify-content-between align-items-center">
+                <span>${listing.title}</span>
+                <div>
+                    <small class="text-muted">$${listing.price.toFixed(2)}</small>
+                    <i class="fas fa-arrow-right mx-2 text-muted"></i>
+                    <strong class="text-primary">${changeText}</strong>
+                </div>
+            </div>
+        `;
+    });
+    previewHTML += '</div>';
+    
+    previewDiv.innerHTML = previewHTML;
+}
+
+// Calendar functions
+let currentDate = new Date();
+
+function updateCurrentMonth() {
+    const monthNames = ["January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ];
+    const monthElement = document.getElementById('currentMonth');
+    if (monthElement) {
+        monthElement.textContent = monthNames[currentDate.getMonth()] + ' ' + currentDate.getFullYear();
+    }
+}
+
+function previousMonth() {
+    currentDate.setMonth(currentDate.getMonth() - 1);
+    updateCurrentMonth();
+}
+
+function nextMonth() {
+    currentDate.setMonth(currentDate.getMonth() + 1);
+    updateCurrentMonth();
+}
+
+function addAvailability() {
+    alert('Add availability feature - will open date picker to block/unblock dates.');
+}
+
+// Initialize charts
+function initializeCharts() {
+    const earningsCtx = document.getElementById('earningsChart');
+    const bookingsCtx = document.getElementById('bookingsChart');
+    
+    if (earningsCtx) {
+        new Chart(earningsCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: [{
+                    label: 'Monthly Earnings ($)',
+                    data: [1200, 1900, 3000, 5000, 2300, 2900, 3500, 4200, 3800, 4100, 4500, 5200],
+                    borderColor: '#007bff',
+                    backgroundColor: 'rgba(0, 123, 255, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, ticks: { callback: value => '$' + value.toLocaleString() } }
+                }
+            }
+        });
+    }
+    
+    if (bookingsCtx) {
+        new Chart(bookingsCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: [{
+                    label: 'Bookings',
+                    data: [2, 3, 5, 8, 4, 6, 7, 9, 8, 10, 11, 12],
+                    backgroundColor: '#28a745'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, ticks: { stepSize: 1 } }
+                }
+            }
+        });
+    }
+}
+
+// Event listeners for pricing changes
+document.addEventListener('change', function(event) {
+    if (event.target.id === 'pricingAction' || event.target.id === 'pricingValue') {
+        updatePricingPreview();
+    }
+});
+
+document.addEventListener('input', function(event) {
+    if (event.target.id === 'pricingValue') {
+        updatePricingPreview();
+    }
+});
+</script>

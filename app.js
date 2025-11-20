@@ -22,6 +22,8 @@ const wishlistRoutes = require("./routes/wishlists.js");
 const activityRoutes = require("./routes/activities.js");
 const notificationRoutes = require("./routes/notifications.js");
 const premiumRoutes = require("./routes/premium.js");
+const searchRoutes = require("./routes/search.js");
+const staticRoutes = require("./routes/static.js");
 const session = require("express-session");
 const flash = require("connect-flash");
 const passport = require("passport");
@@ -52,6 +54,7 @@ app.use(express.json());
 app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "Public")));
 app.use(express.static(path.join(__dirname, "assets")));
+app.use(express.static(path.join(__dirname, "uploads")));
 app.engine("ejs", ejsMate);
 
 // Security middleware
@@ -59,12 +62,12 @@ app.use(helmet({
     contentSecurityPolicy: {
         directives: {
             defaultSrc: ["'self'"],
-            styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com"],
+            styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com", "https://unpkg.com"],
             fontSrc: ["'self'", "https://fonts.gstatic.com", "https://cdnjs.cloudflare.com"],
-            scriptSrc: ["'self'", "https://cdn.jsdelivr.net"],
+            scriptSrc: ["'self'", "https://cdn.jsdelivr.net", "https://unpkg.com"],
             scriptSrcAttr: ["'self'", "'unsafe-inline'"],
             imgSrc: ["'self'", "data:", "https:"],
-            connectSrc: ["'self'", "https://cdn.jsdelivr.net"]
+            connectSrc: ["'self'", "https://cdn.jsdelivr.net", "https://unpkg.com"]
         }
     }
 }));
@@ -92,22 +95,15 @@ const sessionOptions = {
     }
 };
 
-app.get("/", (req, res) => {
-    res.send("I am root");
-});
-
 app.use(session(sessionOptions));
 app.use(flash());
 
 app.use(passport.initialize());
 app.use(passport.session());
 
-
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
-
-
 
 app.use((req, res, next) => {
     res.locals.success = req.flash("success");
@@ -121,8 +117,15 @@ app.use((req, res, next) => {
     next();
 });
 
+app.get("/", async (req, res) => {
+    const Listing = require("./Models/listing");
+    const featuredListings = await Listing.find({}).sort({ _id: -1 }).limit(6);
+    res.render("homepage.ejs", { featuredListings });
+});
+
 
 app.use("/api", apiRoutes);
+app.use("/search", searchRoutes);
 app.use("/listings", listingRoutes);
 app.use("/listings/:id/reviews", reviewRoutes);
 app.use("/listings/:id/comments", commentRoutes);
@@ -133,7 +136,8 @@ app.use("/wishlists", wishlistRoutes);
 app.use("/activities", activityRoutes);
 app.use("/notifications", notificationRoutes);
 app.use("/premium", premiumRoutes);
-app.use("/", userRoutes);
+app.use("/users", userRoutes);
+app.use("/", staticRoutes);
 
 // Socket.io integration
 io.use((socket, next) => {

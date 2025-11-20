@@ -1483,6 +1483,261 @@ class MapManager {
 }
 
 // Initialize components when DOM is loaded
+// Newsletter Form Handler
+class NewsletterFormHandler {
+    constructor() {
+        this.form = document.querySelector('.newsletter-form');
+        this.input = this.form.querySelector('.newsletter-input');
+        this.button = this.form.querySelector('.newsletter-btn');
+        this.init();
+    }
+
+    init() {
+        this.form.addEventListener('submit', this.handleSubmit.bind(this));
+        this.input.addEventListener('input', this.handleInput.bind(this));
+    }
+
+    async handleSubmit(event) {
+        event.preventDefault();
+
+        const email = this.input.value.trim();
+
+        if (!this.isValidEmail(email)) {
+            this.showError('Please enter a valid email address');
+            return;
+        }
+
+        this.setLoadingState(true);
+
+        try {
+            // Simulate API call
+            const response = await this.subscribeToNewsletter(email);
+
+            if (response.success) {
+                this.showSuccess('Successfully subscribed to our newsletter!');
+                this.form.reset();
+            } else {
+                throw new Error(response.message || 'Subscription failed');
+            }
+        } catch (error) {
+            this.showError(error.message);
+        } finally {
+            this.setLoadingState(false);
+        }
+    }
+
+    handleInput(event) {
+        const email = event.target.value;
+
+        // Real-time email validation feedback
+        if (email.length > 0) {
+            if (this.isValidEmail(email)) {
+                this.input.classList.remove('is-invalid');
+                this.input.classList.add('is-valid');
+            } else {
+                this.input.classList.remove('is-valid');
+                this.input.classList.add('is-invalid');
+            }
+        } else {
+            this.input.classList.remove('is-valid', 'is-invalid');
+        }
+    }
+
+    async subscribeToNewsletter(email) {
+        // Simulate API request
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                // Simulate success (90% success rate)
+                const success = Math.random() > 0.1;
+                resolve({
+                    success: success,
+                    message: success ? '' : 'This email is already subscribed'
+                });
+            }, 1000);
+        });
+    }
+
+    setLoadingState(loading) {
+        if (loading) {
+            this.button.disabled = true;
+            this.button.innerHTML = '<i class="fas fa-spinner fa-spin btn-icon"></i> Subscribing...';
+        } else {
+            this.button.disabled = false;
+            this.button.innerHTML = '<span class="btn-text">Subscribe</span><i class="fas fa-paper-plane btn-icon"></i>';
+        }
+    }
+
+    showSuccess(message) {
+        this.showMessage(message, 'success');
+    }
+
+    showError(message) {
+        this.showMessage(message, 'error');
+    }
+
+    showMessage(message, type) {
+        // Remove existing messages
+        const existingMessage = this.form.querySelector('.newsletter-message');
+        if (existingMessage) {
+            existingMessage.remove();
+        }
+
+        // Create new message
+        const messageEl = document.createElement('div');
+        messageEl.className = `newsletter-message ${type}`;
+        messageEl.innerHTML = `
+            <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+            <span>${message}</span>
+        `;
+
+        // Insert message after form
+        this.form.parentNode.insertBefore(messageEl, this.form.nextSibling);
+
+        // Auto-remove success messages after 5 seconds
+        if (type === 'success') {
+            setTimeout(() => {
+                messageEl.remove();
+            }, 5000);
+        }
+    }
+
+    isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
+}
+
+// Footer Theme Toggle
+class FooterThemeToggle {
+    constructor() {
+        this.button = document.getElementById('theme-toggle-footer');
+        this.init();
+    }
+
+    init() {
+        if (this.button) {
+            this.button.addEventListener('click', this.toggleTheme.bind(this));
+            this.updateButtonText();
+        }
+    }
+
+    toggleTheme() {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+        // Update theme
+        document.documentElement.setAttribute('data-theme', newTheme);
+
+        // Save preference
+        localStorage.setItem('theme', newTheme);
+
+        // Update button text
+        this.updateButtonText();
+
+        // Dispatch custom event for other components
+        window.dispatchEvent(new CustomEvent('themeChanged', {
+            detail: { theme: newTheme }
+        }));
+    }
+
+    updateButtonText() {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const textElement = this.button.querySelector('.theme-text');
+
+        if (textElement) {
+            textElement.textContent = currentTheme === 'dark' ? 'Dark' : 'Light';
+        }
+    }
+}
+
+// Copyright Updater
+class CopyrightUpdater {
+    constructor() {
+        this.yearElement = document.querySelector('.current-year');
+        this.updateYear();
+    }
+
+    updateYear() {
+        if (this.yearElement) {
+            this.yearElement.textContent = new Date().getFullYear();
+        }
+    }
+}
+
+// Footer Accessibility Enhancements
+class FooterAccessibility {
+    constructor() {
+        this.init();
+    }
+
+    init() {
+        this.setupKeyboardNavigation();
+        this.setupAnnouncements();
+        this.setupReducedMotion();
+    }
+
+    setupKeyboardNavigation() {
+        const focusableElements = document.querySelectorAll(
+            '.advanced-footer a, .advanced-footer button, .advanced-footer input'
+        );
+
+        focusableElements.forEach(element => {
+            element.addEventListener('keydown', this.handleKeyboardNav.bind(this));
+        });
+    }
+
+    handleKeyboardNav(event) {
+        // Enhanced keyboard navigation for footer elements
+        if (event.key === 'Tab') {
+            // Ensure proper tab order
+            this.ensureFocusOrder(event.target);
+        }
+    }
+
+    ensureFocusOrder(element) {
+        // Logic to ensure logical tab order through footer sections
+        const footer = element.closest('.advanced-footer');
+        if (!footer) return;
+
+        // Add visual indicators for keyboard navigation
+        element.addEventListener('focus', () => {
+            element.classList.add('keyboard-focused');
+        });
+
+        element.addEventListener('blur', () => {
+            element.classList.remove('keyboard-focused');
+        });
+    }
+
+    setupAnnouncements() {
+        // Setup live regions for dynamic content announcements
+        const announcer = document.createElement('div');
+        announcer.setAttribute('aria-live', 'polite');
+        announcer.setAttribute('aria-atomic', 'true');
+        announcer.className = 'sr-only';
+        announcer.id = 'footer-announcer';
+        document.body.appendChild(announcer);
+    }
+
+    announceToScreenReader(message) {
+        const announcer = document.getElementById('footer-announcer');
+        if (announcer) {
+            announcer.textContent = message;
+            setTimeout(() => {
+                announcer.textContent = '';
+            }, 1000);
+        }
+    }
+
+    setupReducedMotion() {
+        // Respect user's motion preferences
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            document.documentElement.classList.add('reduced-motion');
+        }
+    }
+}
+
+// Initialize components when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     // Initialize theme manager
     new ThemeManager();
@@ -1548,7 +1803,14 @@ document.addEventListener('DOMContentLoaded', () => {
     new MessagingManager();
 
     // Initialize map manager
+    // Initialize map manager
     new MapManager();
+
+    // Initialize footer components
+    new NewsletterFormHandler();
+    new FooterThemeToggle();
+    new CopyrightUpdater();
+    new FooterAccessibility();
 });
 
 // Messaging Manager for unread count updates

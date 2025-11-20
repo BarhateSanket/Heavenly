@@ -44,10 +44,10 @@
 
            <% if(!currUser){%>
            <li class="nav-item" role="none">
-             <a class="nav-link" href="/signup" role="menuitem">Sign Up</a>
+             <a class="nav-link" href="/users/signup" role="menuitem">Sign Up</a>
            </li>
            <li class="nav-item" role="none">
-             <a class="nav-link" href="/login" role="menuitem">Log In</a>
+             <a class="nav-link" href="/users/login" role="menuitem">Log In</a>
            </li>
            <% } %>
            <% if(currUser){%>
@@ -98,6 +98,10 @@
                </a></li>
                <li role="none"><a class="dropdown-item" href="/activities/feed" role="menuitem">Activity Feed</a></li>
                <li role="none"><a class="dropdown-item" href="/wishlists" role="menuitem">My Wishlists</a></li>
+                <li role="none"><hr class="dropdown-divider"></li>
+                <li role="none"><a class="dropdown-item" href="/host/dashboard" role="menuitem">
+                    <i class="fas fa-chart-line me-2"></i>Host Dashboard
+                </a></li>
                <li role="none"><a class="dropdown-item" href="/bookings" role="menuitem">My Bookings</a></li>
                <li role="none"><a class="dropdown-item" href="/profile" role="menuitem">Profile</a></li>
                <li role="none"><a class="dropdown-item" href="/listings/new" role="menuitem">Add Listing</a></li>

@@ -1,0 +1,234 @@
+<% layout('layouts/boilerplate') -%>
+<% block('head').append(`<title>Cookie Policy - Heavenly</title>`) %>
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <h1 class="display-4 text-center mb-5">Cookie Policy</h1>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h2 class="h3 mb-4">What Are Cookies</h2>
+                    <p class="lead mb-4">
+                        Cookies are small text files that are stored on your computer or mobile device when you visit our website.
+                        They help us provide you with a better browsing experience and allow certain features to work properly.
+                    </p>
+
+                    <div class="alert alert-info">
+                        <strong>Last updated:</strong> <%= new Date().toLocaleDateString() %>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="fas fa-cookie-bite text-success me-3" style="font-size: 1.5rem;"></i>
+                                <h5 class="card-title mb-0">Essential Cookies</h5>
+                            </div>
+                            <p class="card-text">
+                                Required for the website to function properly. These cannot be disabled.
+                            </p>
+                            <ul class="small mb-0">
+                                <li>Session management</li>
+                                <li>Security features</li>
+                                <li>Basic functionality</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="fas fa-chart-line text-primary me-3" style="font-size: 1.5rem;"></i>
+                                <h5 class="card-title mb-0">Analytics Cookies</h5>
+                            </div>
+                            <p class="card-text">
+                                Help us understand how visitors interact with our website.
+                            </p>
+                            <ul class="small mb-0">
+                                <li>Page views tracking</li>
+                                <li>User behavior analysis</li>
+                                <li>Performance monitoring</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="fas fa-ad text-warning me-3" style="font-size: 1.5rem;"></i>
+                                <h5 class="card-title mb-0">Marketing Cookies</h5>
+                            </div>
+                            <p class="card-text">
+                                Used to deliver relevant advertisements and track campaign effectiveness.
+                            </p>
+                            <ul class="small mb-0">
+                                <li>Targeted advertising</li>
+                                <li>Social media tracking</li>
+                                <li>Campaign measurement</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="fas fa-cogs text-info me-3" style="font-size: 1.5rem;"></i>
+                                <h5 class="card-title mb-0">Functional Cookies</h5>
+                            </div>
+                            <p class="card-text">
+                                Remember your preferences and enhance your experience.
+                            </p>
+                            <ul class="small mb-0">
+                                <li>Language settings</li>
+                                <li>Theme preferences</li>
+                                <li>Location data</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h3 class="h4 mb-3">Cookies We Use</h3>
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Cookie Name</th>
+                                    <th>Purpose</th>
+                                    <th>Duration</th>
+                                    <th>Type</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>sessionId</td>
+                                    <td>Maintains user session</td>
+                                    <td>Session</td>
+                                    <td>Essential</td>
+                                </tr>
+                                <tr>
+                                    <td>_ga</td>
+                                    <td>Google Analytics tracking</td>
+                                    <td>2 years</td>
+                                    <td>Analytics</td>
+                                </tr>
+                                <tr>
+                                    <td>theme</td>
+                                    <td>Remembers theme preference</td>
+                                    <td>1 year</td>
+                                    <td>Functional</td>
+                                </tr>
+                                <tr>
+                                    <td>location</td>
+                                    <td>Stores location preferences</td>
+                                    <td>30 days</td>
+                                    <td>Functional</td>
+                                </tr>
+                                <tr>
+                                    <td>fb_pixel</td>
+                                    <td>Facebook advertising tracking</td>
+                                    <td>90 days</td>
+                                    <td>Marketing</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h3 class="h4 mb-3">Third-Party Cookies</h3>
+                    <p class="mb-3">
+                        We use third-party services that may set their own cookies. These include:
+                    </p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Analytics</h6>
+                            <ul class="small">
+                                <li>Google Analytics</li>
+                                <li>Hotjar</li>
+                                <li>Mixpanel</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Social Media</h6>
+                            <ul class="small">
+                                <li>Facebook Pixel</li>
+                                <li>Twitter Conversion Tracking</li>
+                                <li>LinkedIn Insight Tag</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h3 class="h4 mb-3">Managing Cookies</h3>
+                    <p class="mb-3">
+                        You can control and manage cookies in various ways:
+                    </p>
+                    <div class="accordion" id="cookieAccordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#browser-settings">
+                                    Browser Settings
+                                </button>
+                            </h2>
+                            <div id="browser-settings" class="accordion-collapse collapse show" data-bs-parent="#cookieAccordion">
+                                <div class="accordion-body">
+                                    Most web browsers allow you to control cookies through their settings. You can usually find these settings in the 'Options' or 'Preferences' menu.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#opt-out">
+                                    Opt-out Links
+                                </button>
+                            </h2>
+                            <div id="opt-out" class="accordion-collapse collapse" data-bs-parent="#cookieAccordion">
+                                <div class="accordion-body">
+                                    <ul>
+                                        <li><a href="https://tools.google.com/dlpage/gaoptout" target="_blank">Google Analytics Opt-out</a></li>
+                                        <li><a href="https://www.facebook.com/ads/preferences/" target="_blank">Facebook Advertising Preferences</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h3 class="h4 mb-3">Contact Us</h3>
+                    <p class="mb-3">
+                        If you have any questions about our use of cookies or this Cookie Policy, please contact us.
+                    </p>
+                    <div class="d-flex gap-3">
+                        <a href="/contact" class="btn btn-primary">
+                            <i class="fas fa-envelope me-2"></i>Contact Us
+                        </a>
+                        <a href="/privacy-policy" class="btn btn-outline-primary">
+                            <i class="fas fa-shield-alt me-2"></i>Privacy Policy
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

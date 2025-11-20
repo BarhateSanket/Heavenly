@@ -1,0 +1,312 @@
+<% layout("layouts/boilerplate") %>
+
+<div class="container-fluid py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <!-- Header -->
+            <div class="text-center mb-5">
+                <h1 class="display-4 fw-bold mb-3">Frequently Asked Questions</h1>
+                <p class="lead text-muted">Find answers to common questions about using Heavenly</p>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="row justify-content-center mb-5">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <input type="text" class="form-control form-control-lg" id="faqSearch" placeholder="Search FAQs...">
+                        <button class="btn btn-primary" type="button">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Categories -->
+            <div class="row mb-5">
+                <div class="col-12">
+                    <div class="d-flex justify-content-center flex-wrap gap-2 mb-4">
+                        <button class="btn btn-outline-primary active" data-category="all">All</button>
+                        <button class="btn btn-outline-primary" data-category="booking">Booking</button>
+                        <button class="btn btn-outline-primary" data-category="hosting">Hosting</button>
+                        <button class="btn btn-outline-primary" data-category="account">Account</button>
+                        <button class="btn btn-outline-primary" data-category="payment">Payment</button>
+                        <button class="btn btn-outline-primary" data-category="safety">Safety</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FAQ Accordion -->
+            <div class="accordion" id="faqAccordion">
+
+                <!-- Getting Started -->
+                <div class="accordion-item faq-category" data-category="account">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#getting-started">
+                            Getting Started
+                        </button>
+                    </h2>
+                    <div id="getting-started" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            <div class="accordion" id="gettingStartedSub">
+                                <div class="accordion-item">
+                                    <h3 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#gs1">
+                                            How do I create an account?
+                                        </button>
+                                    </h3>
+                                    <div id="gs1" class="accordion-collapse collapse" data-bs-parent="#gettingStartedSub">
+                                        <div class="accordion-body">
+                                            To create an account, click the "Sign Up" button in the top right corner. You'll need to provide your email address, create a password, and verify your account through the email we send you. You can also sign up using your Google or Facebook account for faster registration.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item">
+                                    <h3 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#gs2">
+                                            Is Heavenly free to use?
+                                        </button>
+                                    </h3>
+                                    <div id="gs2" class="accordion-collapse collapse" data-bs-parent="#gettingStartedSub">
+                                        <div class="accordion-body">
+                                            Yes, creating an account and browsing listings is completely free. You only pay when you make a booking. Hosts pay a service fee of 3% on each booking.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Booking -->
+                <div class="accordion-item faq-category" data-category="booking">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#booking">
+                            Booking a Stay
+                        </button>
+                    </h2>
+                    <div id="booking" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            <div class="accordion" id="bookingSub">
+                                <div class="accordion-item">
+                                    <h3 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#b1">
+                                            How do I make a booking?
+                                        </button>
+                                    </h3>
+                                    <div id="b1" class="accordion-collapse collapse" data-bs-parent="#bookingSub">
+                                        <div class="accordion-body">
+                                            Find a listing you like, select your dates, and click "Request to Book". Review the details, enter your payment information, and confirm. You'll receive an instant confirmation if the host accepts automatic bookings, or the host will respond within 24 hours.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item">
+                                    <h3 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#b2">
+                                            What if my booking is declined?
+                                        </button>
+                                    </h3>
+                                    <div id="b2" class="accordion-collapse collapse" data-bs-parent="#bookingSub">
+                                        <div class="accordion-body">
+                                            If a host declines your booking, you'll receive a full refund immediately. You can try booking alternative dates or look for similar listings in the area.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item">
+                                    <h3 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#b3">
+                                            Can I modify my booking?
+                                        </button>
+                                    </h3>
+                                    <div id="b3" class="accordion-collapse collapse" data-bs-parent="#bookingSub">
+                                        <div class="accordion-body">
+                                            You can request changes to your booking through the Heavenly app or website. The host will review your request and respond. Changes are subject to availability and the host's approval.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hosting -->
+                <div class="accordion-item faq-category" data-category="hosting">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#hosting">
+                            Becoming a Host
+                        </button>
+                    </h2>
+                    <div id="hosting" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            <div class="accordion" id="hostingSub">
+                                <div class="accordion-item">
+                                    <h3 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#h1">
+                                            How do I list my property?
+                                        </button>
+                                    </h3>
+                                    <div id="h1" class="accordion-collapse collapse" data-bs-parent="#hostingSub">
+                                        <div class="accordion-body">
+                                            Click "Become a Host" and follow the steps to create your listing. You'll need to provide details about your property, upload photos, set pricing, and choose availability. Our team will review your listing before it goes live.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item">
+                                    <h3 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#h2">
+                                            What are the hosting requirements?
+                                        </button>
+                                    </h3>
+                                    <div id="h2" class="accordion-collapse collapse" data-bs-parent="#hostingSub">
+                                        <div class="accordion-body">
+                                            You must be at least 18 years old, provide accurate information about your property, and comply with local laws and regulations. Your listing should meet our quality standards and safety requirements.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payments -->
+                <div class="accordion-item faq-category" data-category="payment">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#payments">
+                            Payments & Refunds
+                        </button>
+                    </h2>
+                    <div id="payments" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            <div class="accordion" id="paymentsSub">
+                                <div class="accordion-item">
+                                    <h3 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#p1">
+                                            When do I get paid as a host?
+                                        </button>
+                                    </h3>
+                                    <div id="p1" class="accordion-collapse collapse" data-bs-parent="#paymentsSub">
+                                        <div class="accordion-body">
+                                            Hosts receive payment 24 hours after check-in, minus the 3% service fee. Funds are transferred to your linked bank account or PayPal.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item">
+                                    <h3 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#p2">
+                                            What is the cancellation policy?
+                                        </button>
+                                    </h3>
+                                    <div id="p2" class="accordion-collapse collapse" data-bs-parent="#paymentsSub">
+                                        <div class="accordion-body">
+                                            Cancellation policies vary by listing. Most offer flexible cancellation up to 24 hours before check-in. Check the specific policy for each booking.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Safety -->
+                <div class="accordion-item faq-category" data-category="safety">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#safety">
+                            Safety & Trust
+                        </button>
+                    </h2>
+                    <div id="safety" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                        <div class="accordion-body">
+                            <div class="accordion" id="safetySub">
+                                <div class="accordion-item">
+                                    <h3 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#s1">
+                                            How does Heavenly protect users?
+                                        </button>
+                                    </h3>
+                                    <div id="s1" class="accordion-collapse collapse" data-bs-parent="#safetySub">
+                                        <div class="accordion-body">
+                                            We verify identities, provide secure payment processing, and offer 24/7 customer support. All users must agree to our community standards and terms of service.
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item">
+                                    <h3 class="accordion-header">
+                                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#s2">
+                                            What should I do if there's an issue?
+                                        </button>
+                                    </h3>
+                                    <div id="s2" class="accordion-collapse collapse" data-bs-parent="#safetySub">
+                                        <div class="accordion-body">
+                                            Contact our support team immediately through the app or website. We have resolution specialists who can help mediate disputes and ensure fair outcomes.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Support -->
+            <div class="row mt-5">
+                <div class="col-12 text-center">
+                    <div class="card shadow-sm">
+                        <div class="card-body py-5">
+                            <h3 class="card-title mb-3">Still need help?</h3>
+                            <p class="card-text mb-4">Can't find the answer you're looking for? Our support team is here to help.</p>
+                            <div class="row justify-content-center">
+                                <div class="col-md-4 mb-3">
+                                    <a href="/contact" class="btn btn-primary btn-lg w-100">
+                                        <i class="fas fa-envelope me-2"></i>Contact Support
+                                    </a>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <a href="/help-center" class="btn btn-outline-primary btn-lg w-100">
+                                        <i class="fas fa-question-circle me-2"></i>Help Center
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Simple FAQ search and filter functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('faqSearch');
+    const categoryButtons = document.querySelectorAll('[data-category]');
+    const faqItems = document.querySelectorAll('.faq-category');
+
+    // Search functionality
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        faqItems.forEach(item => {
+            const text = item.textContent.toLowerCase();
+            item.style.display = text.includes(searchTerm) ? '' : 'none';
+        });
+    });
+
+    // Category filter functionality
+    categoryButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const category = this.getAttribute('data-category');
+
+            // Update active button
+            categoryButtons.forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+
+            // Filter FAQ items
+            faqItems.forEach(item => {
+                if (category === 'all' || item.getAttribute('data-category') === category) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    });
+});
+</script>

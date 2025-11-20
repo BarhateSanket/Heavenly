@@ -1,0 +1,1004 @@
+<%- layout("layouts/boilerplate") %>
+
+<div class="row mt-3">
+    <div class="col-md-10 offset-md-1">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2>Account Settings</h2>
+                <p class="text-muted">Manage your account security, privacy, and preferences</p>
+            </div>
+            <a href="/users/profile/<%= user._id %>" class="btn btn-secondary">
+                <i class="fas fa-arrow-left me-1"></i>Back to Profile
+            </a>
+        </div>
+
+        <!-- Display validation errors -->
+        <% if (errors && errors.length > 0) { %>
+            <div class="alert alert-danger" role="alert">
+                <h6 class="alert-heading">Please fix the following errors:</h6>
+                <ul class="mb-0">
+                    <% errors.forEach(error => { %>
+                        <li><%= error.msg %></li>
+                    <% }); %>
+                </ul>
+            </div>
+        <% } %>
+
+        <!-- Settings Navigation Tabs -->
+        <div class="settings-tabs">
+            <nav>
+                <div class="nav nav-tabs" id="settingsTabs" role="tablist">
+                    <button class="nav-link <%= activeTab === 'security' ? 'active' : '' %>" 
+                            id="security-tab" data-bs-toggle="tab" 
+                            data-bs-target="#security" type="button" role="tab">
+                        <i class="fas fa-shield-alt me-2"></i>Security
+                    </button>
+                    <button class="nav-link <%= activeTab === 'notifications' ? 'active' : '' %>" 
+                            id="notifications-tab" data-bs-toggle="tab" 
+                            data-bs-target="#notifications" type="button" role="tab">
+                        <i class="fas fa-bell me-2"></i>Notifications
+                    </button>
+                    <button class="nav-link <%= activeTab === 'privacy' ? 'active' : '' %>" 
+                            id="privacy-tab" data-bs-toggle="tab" 
+                            data-bs-target="#privacy" type="button" role="tab">
+                        <i class="fas fa-eye-slash me-2"></i>Privacy
+                    </button>
+                    <button class="nav-link <%= activeTab === 'account' ? 'active' : '' %>" 
+                            id="account-tab" data-bs-toggle="tab" 
+                            data-bs-target="#account" type="button" role="tab">
+                        <i class="fas fa-cog me-2"></i>Account
+                    </button>
+                </div>
+            </nav>
+
+            <div class="tab-content mt-4" id="settingsTabContent">
+                
+                <!-- Security Settings Tab -->
+                <div class="tab-pane fade <%= activeTab === 'security' ? 'show active' : '' %>" 
+                     id="security" role="tabpanel" aria-labelledby="security-tab">
+                    
+                    <!-- Password Change Section -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-lock me-2"></i>Change Password</h5>
+                        </div>
+                        <div class="card-body">
+                            <form method="POST" action="/users/settings?tab=security" class="needs-validation" novalidate>
+                                <input type="hidden" name="settingType" value="security">
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <label for="currentPassword" class="form-label">Current Password</label>
+                                        <input name="currentPassword" type="password" class="form-control" 
+                                               placeholder="Enter current password" required>
+                                        <div class="invalid-feedback">
+                                            Please enter your current password.
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="newPassword" class="form-label">New Password</label>
+                                        <input name="newPassword" type="password" class="form-control" 
+                                               placeholder="Enter new password" required>
+                                        <div class="invalid-feedback">
+                                            New password must be at least 6 characters.
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="confirmPassword" class="form-label">Confirm New Password</label>
+                                        <input name="confirmPassword" type="password" class="form-control" 
+                                               placeholder="Confirm new password" required>
+                                        <div class="invalid-feedback">
+                                            Password confirmation must match.
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-1"></i>Update Password
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Two-Factor Authentication Section -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-mobile-alt me-2"></i>Two-Factor Authentication</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <p class="mb-3">Add an extra layer of security to your account by enabling two-factor authentication.</p>
+                                    <% if (user.securitySettings?.twoFactorEnabled) { %>
+                                        <div class="alert alert-success">
+                                            <i class="fas fa-check-circle me-2"></i>Two-factor authentication is enabled
+                                        </div>
+                                    <% } else { %>
+                                        <div class="alert alert-warning">
+                                            <i class="fas fa-exclamation-triangle me-2"></i>Two-factor authentication is not enabled
+                                        </div>
+                                    <% } %>
+                                </div>
+                                <div class="col-md-4 text-end">
+                                    <form method="POST" action="/users/settings?tab=security" class="d-inline">
+                                        <input type="hidden" name="settingType" value="security">
+                                        <input type="hidden" name="twoFactorEnabled" value="<%= !user.securitySettings?.twoFactorEnabled %>">
+                                        <button type="submit" class="btn btn-<%= user.securitySettings?.twoFactorEnabled ? 'warning' : 'success' %>">
+                                            <%= user.securitySettings?.twoFactorEnabled ? 'Disable' : 'Enable' %> 2FA
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Session Management Section -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-desktop me-2"></i>Active Sessions</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="sessionTimeout" class="form-label">Session Timeout (hours)</label>
+                                    <select name="sessionTimeout" class="form-select">
+                                        <option value="1" <%= user.securitySettings?.sessionTimeout === 1 ? 'selected' : '' %>>1 hour</option>
+                                        <option value="4" <%= user.securitySettings?.sessionTimeout === 4 ? 'selected' : '' %>>4 hours</option>
+                                        <option value="8" <%= user.securitySettings?.sessionTimeout === 8 ? 'selected' : '' %>>8 hours</option>
+                                        <option value="24" <%= user.securitySettings?.sessionTimeout === 24 ? 'selected' : '' %>>24 hours</option>
+                                        <option value="168" <%= user.securitySettings?.sessionTimeout === 168 ? 'selected' : '' %>>7 days</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-check mt-4">
+                                        <input class="form-check-input" type="checkbox" name="loginNotifications" 
+                                               id="loginNotifications" <%= user.securitySettings?.loginNotifications ? 'checked' : '' %>>
+                                        <label class="form-check-label" for="loginNotifications">
+                                            Email me about new login attempts
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Active Sessions List -->
+                            <div class="active-sessions">
+                                <h6 class="mb-3">Active Sessions</h6>
+                                <% if (user.securitySettings?.activeSessions && user.securitySettings.activeSessions.length > 0) { %>
+                                    <% user.securitySettings.activeSessions.forEach(session => { %>
+                                        <div class="session-item d-flex justify-content-between align-items-center p-3 border rounded mb-2">
+                                            <div>
+                                                <strong><%= session.deviceInfo || 'Unknown Device' %></strong>
+                                                <div class="text-muted small">
+                                                    <i class="fas fa-map-marker-alt me-1"></i>
+                                                    <%= session.location?.city || 'Unknown' %>, <%= session.location?.country || 'Unknown' %>
+                                                    <span class="ms-3">
+                                                        <i class="fas fa-clock me-1"></i>
+                                                        Last activity: <%= new Date(session.lastActivity).toLocaleString() %>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <button type="button" class="btn btn-sm btn-outline-danger terminate-session" 
+                                                    data-session-id="<%= session.sessionId %>">
+                                                <i class="fas fa-times me-1"></i>Terminate
+                                            </button>
+                                        </div>
+                                    <% }); %>
+                                <% } else { %>
+                                    <p class="text-muted">No active sessions found.</p>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recovery Settings Section -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-life-ring me-2"></i>Account Recovery</h5>
+                        </div>
+                        <div class="card-body">
+                            <form method="POST" action="/users/settings?tab=security">
+                                <input type="hidden" name="settingType" value="security">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="recoveryEmail" class="form-label">Recovery Email</label>
+                                        <input name="recoveryEmail" type="email" class="form-control" 
+                                               value="<%= user.recoverySettings?.recoveryEmail?.type || '' %>" 
+                                               placeholder="recovery@email.com">
+                                        <div class="form-text">
+                                            <%= user.recoverySettings?.recoveryEmail?.verified ? '✓ Verified' : '✗ Not verified' %>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="recoveryPhone" class="form-label">Recovery Phone</label>
+                                        <input name="recoveryPhone" type="tel" class="form-control" 
+                                               value="<%= user.recoverySettings?.recoveryPhone?.type || '' %>" 
+                                               placeholder="+1234567890">
+                                        <div class="form-text">
+                                            <%= user.recoverySettings?.recoveryPhone?.verified ? '✓ Verified' : '✗ Not verified' %>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-1"></i>Update Recovery Info
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notifications Tab -->
+                <div class="tab-pane fade <%= activeTab === 'notifications' ? 'show active' : '' %>" 
+                     id="notifications" role="tabpanel" aria-labelledby="notifications-tab">
+                    
+                    <form method="POST" action="/users/settings?tab=notifications">
+                        <input type="hidden" name="settingType" value="notifications">
+                        
+                        <!-- General Notifications -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0"><i class="fas fa-bell me-2"></i>General Notifications</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" name="emailNotifications" 
+                                                   id="emailNotifications" <%= user.notificationPreferences?.email ? 'checked' : '' %>>
+                                            <label class="form-check-label" for="emailNotifications">
+                                                Email Notifications
+                                            </label>
+                                            <div class="form-text">Receive notifications via email</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" name="pushNotifications" 
+                                                   id="pushNotifications" <%= user.notificationPreferences?.push ? 'checked' : '' %>>
+                                            <label class="form-check-label" for="pushNotifications">
+                                                Push Notifications
+                                            </label>
+                                            <div class="form-text">Receive push notifications</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" name="smsNotifications" 
+                                                   id="smsNotifications" <%= user.notificationPreferences?.sms ? 'checked' : '' %>>
+                                            <label class="form-check-label" for="smsNotifications">
+                                                SMS Notifications
+                                            </label>
+                                            <div class="form-text">Receive SMS for critical updates</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Notification Types -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0"><i class="fas fa-list me-2"></i>Notification Types</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h6>Booking & Reservations</h6>
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input" type="checkbox" name="types[booking]" 
+                                                   id="bookingNotifications" <%= user.notificationPreferences?.types?.booking ? 'checked' : '' %>>
+                                            <label class="form-check-label" for="bookingNotifications">
+                                                Booking confirmations and updates
+                                            </label>
+                                        </div>
+                                        
+                                        <h6 class="mt-4">Communication</h6>
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input" type="checkbox" name="types[message]" 
+                                                   id="messageNotifications" <%= user.notificationPreferences?.types?.message ? 'checked' : '' %>>
+                                            <label class="form-check-label" for="messageNotifications">
+                                                New messages from hosts/guests
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6>Reviews & Feedback</h6>
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input" type="checkbox" name="types[review]" 
+                                                   id="reviewNotifications" <%= user.notificationPreferences?.types?.review ? 'checked' : '' %>>
+                                            <label class="form-check-label" for="reviewNotifications">
+                                                New reviews and ratings
+                                            </label>
+                                        </div>
+                                        
+                                        <h6 class="mt-4">Security & Marketing</h6>
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input" type="checkbox" name="types[security]" 
+                                                   id="securityNotifications" <%= user.notificationPreferences?.types?.security ? 'checked' : '' %>>
+                                            <label class="form-check-label" for="securityNotifications">
+                                                Security alerts and login attempts
+                                            </label>
+                                        </div>
+                                        <div class="form-check mb-2">
+                                            <input class="form-check-input" type="checkbox" name="types[marketing]" 
+                                                   id="marketingNotifications" <%= user.notificationPreferences?.types?.marketing ? 'checked' : '' %>>
+                                            <label class="form-check-label" for="marketingNotifications">
+                                                Marketing and promotional emails
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-1"></i>Save Preferences
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Privacy Controls Tab -->
+                <div class="tab-pane fade <%= activeTab === 'privacy' ? 'show active' : '' %>" 
+                     id="privacy" role="tabpanel" aria-labelledby="privacy-tab">
+                    
+                    <form method="POST" action="/users/settings?tab=privacy">
+                        <input type="hidden" name="settingType" value="privacy">
+                        
+                        <!-- Profile Visibility -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0"><i class="fas fa-user-shield me-2"></i>Profile Visibility</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label for="profileVisibility" class="form-label">Who can see your profile?</label>
+                                        <select name="profileVisibility" class="form-select">
+                                            <option value="public" <%= (user.privacySettings?.profileVisibility || user.isPrivate ? 'private' : 'public') === 'public' ? 'selected' : '' %>>
+                                                Public - Anyone can see your profile
+                                            </option>
+                                            <option value="private" <%= (user.privacySettings?.profileVisibility || user.isPrivate ? 'private' : 'public') === 'private' ? 'selected' : '' %>>
+                                                Private - Only you can see your profile
+                                            </option>
+                                            <option value="followers-only" <%= user.privacySettings?.profileVisibility === 'followers-only' ? 'selected' : '' %>>
+                                                Followers Only - Only people you follow can see your profile
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-check mt-4">
+                                            <input class="form-check-input" type="checkbox" name="showOnlineStatus" 
+                                                   id="showOnlineStatus" <%= user.privacySettings?.showOnlineStatus ? 'checked' : '' %>>
+                                            <label class="form-check-label" for="showOnlineStatus">
+                                                Show online status to other users
+                                            </label>
+                                            <div class="form-text">Let others see when you're active</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Data & Personalization -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Data & Personalization</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" name="allowDataSharing" 
+                                                   id="allowDataSharing" <%= user.privacySettings?.allowDataSharing ? 'checked' : '' %>>
+                                            <label class="form-check-label" for="allowDataSharing">
+                                                Allow data sharing with partners
+                                            </label>
+                                            <div class="form-text">Share anonymous usage data to improve services</div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" name="searchEngineIndexing" 
+                                                   id="searchEngineIndexing" <%= user.privacySettings?.searchEngineIndexing ? 'checked' : '' %>>
+                                            <label class="form-check-label" for="searchEngineIndexing">
+                                                Allow search engines to index your profile
+                                            </label>
+                                            <div class="form-text">Make your profile discoverable via Google, etc.</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Blocked Users -->
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h5 class="mb-0"><i class="fas fa-user-times me-2"></i>Blocked Users</h5>
+                            </div>
+                            <div class="card-body">
+                                <% if (user.privacySettings?.blockedUsers && user.privacySettings.blockedUsers.length > 0) { %>
+                                    <div class="blocked-users-list">
+                                        <% user.privacySettings.blockedUsers.forEach(blocked => { %>
+                                            <div class="d-flex justify-content-between align-items-center p-3 border rounded mb-2">
+                                                <div>
+                                                    <strong>User ID: <%= blocked.user %></strong>
+                                                    <div class="text-muted small">
+                                                        Blocked on: <%= new Date(blocked.blockedAt).toLocaleDateString() %>
+                                                        <% if (blocked.reason) { %>
+                                                            <br>Reason: <%= blocked.reason %>
+                                                        <% } %>
+                                                    </div>
+                                                </div>
+                                                <button type="button" class="btn btn-sm btn-outline-primary unblock-user" 
+                                                        data-user-id="<%= blocked.user %>">
+                                                    <i class="fas fa-unlock me-1"></i>Unblock
+                                                </button>
+                                            </div>
+                                        <% }); %>
+                                    </div>
+                                <% } else { %>
+                                    <p class="text-muted">You haven't blocked any users yet.</p>
+                                <% } %>
+                            </div>
+                        </div>
+
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save me-1"></i>Save Privacy Settings
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Account Management Tab -->
+                <div class="tab-pane fade <%= activeTab === 'account' ? 'show active' : '' %>" 
+                     id="account" role="tabpanel" aria-labelledby="account-tab">
+                    
+                    <!-- Data Retention -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-database me-2"></i>Data Retention</h5>
+                        </div>
+                        <div class="card-body">
+                            <form method="POST" action="/users/settings?tab=account">
+                                <input type="hidden" name="settingType" value="account">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label for="dataRetention" class="form-label">How long should we keep your data?</label>
+                                        <select name="dataRetention" class="form-select">
+                                            <option value="30-days" <%= user.accountSettings?.dataRetention === '30-days' ? 'selected' : '' %>>30 days</option>
+                                            <option value="90-days" <%= user.accountSettings?.dataRetention === '90-days' ? 'selected' : '' %>>90 days</option>
+                                            <option value="1-year" <%= user.accountSettings?.dataRetention === '1-year' ? 'selected' : '' %>>1 year</option>
+                                            <option value="2-years" <%= user.accountSettings?.dataRetention === '2-years' ? 'selected' : '' %>>2 years</option>
+                                            <option value="indefinite" <%= user.accountSettings?.dataRetention === 'indefinite' ? 'selected' : '' %>>Indefinite</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-check mt-4">
+                                            <input class="form-check-input" type="checkbox" name="marketingConsent" 
+                                                   id="marketingConsent" <%= user.accountSettings?.marketingConsent?.hasConsent ? 'checked' : '' %>>
+                                            <label class="form-check-label" for="marketingConsent">
+                                                I consent to receive marketing communications
+                                            </label>
+                                            <div class="form-text">
+                                                <% if (user.accountSettings?.marketingConsent?.consentDate) { %>
+                                                    Last updated: <%= new Date(user.accountSettings.marketingConsent.consentDate).toLocaleDateString() %>
+                                                <% } %>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary mt-3">
+                                    <i class="fas fa-save me-1"></i>Update Data Settings
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- GDPR & Privacy Rights -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-gavel me-2"></i>GDPR & Privacy Rights</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Your Rights</h6>
+                                    <ul class="list-unstyled">
+                                        <li class="mb-2">
+                                            <button type="button" class="btn btn-sm btn-outline-primary w-100 text-start" id="requestDataExport">
+                                                <i class="fas fa-download me-2"></i>Download My Data
+                                            </button>
+                                        </li>
+                                        <li class="mb-2">
+                                            <button type="button" class="btn btn-sm btn-outline-info w-100 text-start">
+                                                <i class="fas fa-eye me-2"></i>View Privacy Policy
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6>Legal Agreements</h6>
+                                    <div class="small text-muted">
+                                        <p>Terms of Service: Version <%= user.accountSettings?.termsVersion || '1.0' %></p>
+                                        <p>Privacy Policy: Version <%= user.accountSettings?.privacyPolicyVersion || '1.0' %></p>
+                                        <p>GDPR Consent: <%= user.accountSettings?.gdprConsent?.hasConsent ? 'Granted' : 'Not granted' %></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Account Status & Actions -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-user-cog me-2"></i>Account Status</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Current Status</h6>
+                                    <span class="badge bg-<%= user.accountSettings?.accountStatus === 'active' ? 'success' : 'warning' %>">
+                                        <%= user.accountSettings?.accountStatus || 'active' %>
+                                    </span>
+                                    <% if (user.accountSettings?.deactivationDate) { %>
+                                        <p class="small text-muted mt-2">
+                                            Deactivated on: <%= new Date(user.accountSettings.deactivationDate).toLocaleDateString() %>
+                                            <% if (user.accountSettings?.deactivationReason) { %>
+                                                <br>Reason: <%= user.accountSettings.deactivationReason %>
+                                            <% } %>
+                                        </p>
+                                    <% } %>
+                                </div>
+                                <div class="col-md-6">
+                                    <h6>Account Actions</h6>
+                                    <div class="d-grid gap-2">
+                                        <% if (user.accountSettings?.accountStatus === 'deactivated') { %>
+                                            <button type="button" class="btn btn-success" id="reactivateAccount">
+                                                <i class="fas fa-play me-1"></i>Reactivate Account
+                                            </button>
+                                        <% } else { %>
+                                            <button type="button" class="btn btn-warning" id="deactivateAccount">
+                                                <i class="fas fa-pause me-1"></i>Deactivate Account
+                                            </button>
+                                            <button type="button" class="btn btn-danger" id="deleteAccount">
+                                                <i class="fas fa-trash me-1"></i>Delete Account Permanently
+                                            </button>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Data Export Requests -->
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fas fa-file-export me-2"></i>Data Export Requests</h5>
+                        </div>
+                        <div class="card-body">
+                            <% if (user.accountSettings?.dataExportRequests && user.accountSettings.dataExportRequests.length > 0) { %>
+                                <% user.accountSettings.dataExportRequests.forEach(request => { %>
+                                    <div class="export-request-item p-3 border rounded mb-2">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <strong>Requested: <%= new Date(request.requestedAt).toLocaleDateString() %></strong>
+                                                <span class="badge bg-<%= 
+                                                    request.status === 'completed' ? 'success' : 
+                                                    request.status === 'processing' ? 'info' : 
+                                                    request.status === 'failed' ? 'danger' : 'warning'
+                                                %> ms-2"><%= request.status %></span>
+                                                <% if (request.downloadUrl && request.status === 'completed') { %>
+                                                    <a href="<%= request.downloadUrl %>" class="btn btn-sm btn-outline-primary ms-2">
+                                                        <i class="fas fa-download me-1"></i>Download
+                                                    </a>
+                                                <% } %>
+                                            </div>
+                                            <small class="text-muted">
+                                                Expires: <%= new Date(request.expiresAt).toLocaleDateString() %>
+                                            </small>
+                                        </div>
+                                    </div>
+                                <% }); %>
+                            <% } else { %>
+                                <p class="text-muted">No data export requests found.</p>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Confirmation Modals -->
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmModalLabel">Confirm Action</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="confirmMessage"></p>
+                <div class="form-group" id="reasonInputGroup" style="display: none;">
+                    <label for="deactivationReason" class="form-label">Reason for deactivation:</label>
+                    <textarea class="form-control" id="deactivationReason" rows="3" placeholder="Please provide a reason..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmActionBtn">Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="settingsToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <i class="fas fa-info-circle text-primary me-2"></i>
+            <strong class="me-auto">Settings</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body" id="toastMessage">
+            <!-- Toast message will be inserted here -->
+        </div>
+    </div>
+</div>
+
+<script>
+// Settings page JavaScript
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize Bootstrap tabs
+    const triggerTabList = [].slice.call(document.querySelectorAll('#settingsTabs button'))
+    triggerTabList.forEach(function (triggerEl) {
+        new bootstrap.Tab(triggerEl)
+    });
+
+    // Form validation
+    (function() {
+        'use strict';
+        window.addEventListener('load', function() {
+            const forms = document.getElementsByClassName('needs-validation');
+            const validation = Array.prototype.filter.call(forms, function(form) {
+                form.addEventListener('submit', function(event) {
+                    if (form.checkValidity() === false) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                    }
+                    form.classList.add('was-validated');
+                }, false);
+            });
+        }, false);
+    })();
+
+    // Password strength indicator (basic)
+    const newPasswordInputs = document.querySelectorAll('input[name="newPassword"]');
+    newPasswordInputs.forEach(input => {
+        input.addEventListener('input', function() {
+            const password = this.value;
+            let strength = 0;
+            
+            if (password.length >= 6) strength++;
+            if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
+            if (password.match(/[0-9]/)) strength++;
+            if (password.match(/[^a-zA-Z0-9]/)) strength++;
+            
+            // You could add visual feedback here
+            const feedback = this.nextElementSibling;
+            if (feedback && feedback.classList.contains('invalid-feedback')) {
+                if (strength >= 2) {
+                    this.classList.remove('is-invalid');
+                    this.classList.add('is-valid');
+                } else {
+                    this.classList.remove('is-valid');
+                    this.classList.add('is-invalid');
+                }
+            }
+        });
+    });
+
+    // Session termination
+    document.querySelectorAll('.terminate-session').forEach(button => {
+        button.addEventListener('click', function() {
+            const sessionId = this.dataset.sessionId;
+            showConfirmationModal(
+                'Terminate Session',
+                'Are you sure you want to terminate this session? This will log you out of that device.',
+                () => terminateSession(sessionId)
+            );
+        });
+    });
+
+    // Account actions
+    document.getElementById('deactivateAccount')?.addEventListener('click', function() {
+        showConfirmationModal(
+            'Deactivate Account',
+            'Are you sure you want to deactivate your account? You can reactivate it later.',
+            () => deactivateAccount(),
+            true
+        );
+    });
+
+    document.getElementById('reactivateAccount')?.addEventListener('click', function() {
+        showConfirmationModal(
+            'Reactivate Account',
+            'Are you sure you want to reactivate your account?',
+            () => reactivateAccount()
+        );
+    });
+
+    document.getElementById('deleteAccount')?.addEventListener('click', function() {
+        showConfirmationModal(
+            'Delete Account',
+            'Are you absolutely sure you want to delete your account permanently? This action cannot be undone.',
+            () => deleteAccount()
+        );
+    });
+
+    // Data export request
+    document.getElementById('requestDataExport')?.addEventListener('click', function() {
+        requestDataExport();
+    });
+
+    // Unblock user
+    document.querySelectorAll('.unblock-user').forEach(button => {
+        button.addEventListener('click', function() {
+            const userId = this.dataset.userId;
+            showConfirmationModal(
+                'Unblock User',
+                'Are you sure you want to unblock this user?',
+                () => unblockUser(userId)
+            );
+        });
+    });
+
+    // Utility functions
+    function showConfirmationModal(title, message, callback, showReasonInput = false) {
+        const modal = new bootstrap.Modal(document.getElementById('confirmModal'));
+        const confirmBtn = document.getElementById('confirmActionBtn');
+        const reasonInputGroup = document.getElementById('reasonInputGroup');
+        
+        document.getElementById('confirmModalLabel').textContent = title;
+        document.getElementById('confirmMessage').textContent = message;
+        
+        if (showReasonInput) {
+            reasonInputGroup.style.display = 'block';
+        } else {
+            reasonInputGroup.style.display = 'none';
+        }
+        
+        // Remove previous event listeners
+        const newConfirmBtn = confirmBtn.cloneNode(true);
+        confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+        
+        // Add new event listener
+        newConfirmBtn.addEventListener('click', function() {
+            const reason = document.getElementById('deactivationReason')?.value || '';
+            callback(reason);
+            modal.hide();
+        });
+        
+        modal.show();
+    }
+
+    function showToast(message, type = 'info') {
+        const toast = document.getElementById('settingsToast');
+        const toastMessage = document.getElementById('toastMessage');
+        const toastIcon = toast.querySelector('.toast-header i');
+        
+        toastMessage.textContent = message;
+        toastIcon.className = `fas me-2 ${getIconForType(type)}`;
+        
+        const bsToast = new bootstrap.Toast(toast);
+        bsToast.show();
+    }
+
+    function getIconForType(type) {
+        switch (type) {
+            case 'success': return 'fa-check-circle text-success';
+            case 'error': return 'fa-exclamation-circle text-danger';
+            case 'warning': return 'fa-exclamation-triangle text-warning';
+            default: return 'fa-info-circle text-primary';
+        }
+    }
+
+    // API functions
+    function terminateSession(sessionId) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/users/settings?tab=security';
+        
+        const settingTypeInput = document.createElement('input');
+        settingTypeInput.type = 'hidden';
+        settingTypeInput.name = 'settingType';
+        settingTypeInput.value = 'security';
+        
+        const terminateSessionInput = document.createElement('input');
+        terminateSessionInput.type = 'hidden';
+        terminateSessionInput.name = 'terminateSessionId';
+        terminateSessionInput.value = sessionId;
+        
+        form.appendChild(settingTypeInput);
+        form.appendChild(terminateSessionInput);
+        document.body.appendChild(form);
+        form.submit();
+    }
+
+    function deactivateAccount(reason = '') {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/users/settings?tab=account';
+        
+        const settingTypeInput = document.createElement('input');
+        settingTypeInput.type = 'hidden';
+        settingTypeInput.name = 'settingType';
+        settingTypeInput.value = 'account';
+        
+        const actionInput = document.createElement('input');
+        actionInput.type = 'hidden';
+        actionInput.name = 'action';
+        actionInput.value = 'deactivate';
+        
+        const reasonInput = document.createElement('input');
+        reasonInput.type = 'hidden';
+        reasonInput.name = 'deactivationReason';
+        reasonInput.value = reason;
+        
+        form.appendChild(settingTypeInput);
+        form.appendChild(actionInput);
+        form.appendChild(reasonInput);
+        document.body.appendChild(form);
+        form.submit();
+    }
+
+    function reactivateAccount() {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/users/settings?tab=account';
+        
+        const settingTypeInput = document.createElement('input');
+        settingTypeInput.type = 'hidden';
+        settingTypeInput.name = 'settingType';
+        settingTypeInput.value = 'account';
+        
+        const actionInput = document.createElement('input');
+        actionInput.type = 'hidden';
+        actionInput.name = 'action';
+        actionInput.value = 'reactivate';
+        
+        form.appendChild(settingTypeInput);
+        form.appendChild(actionInput);
+        document.body.appendChild(form);
+        form.submit();
+    }
+
+    function deleteAccount() {
+        showConfirmationModal(
+            'Final Confirmation',
+            'This will permanently delete your account and all associated data. Type "DELETE" to confirm.',
+            (confirmation) => {
+                if (confirmation === 'DELETE') {
+                    // In a real implementation, this would call a delete endpoint
+                    showToast('Account deletion initiated. You will be logged out.', 'warning');
+                    setTimeout(() => {
+                        window.location.href = '/users/logout';
+                    }, 2000);
+                } else {
+                    showToast('Account deletion cancelled. Please type "DELETE" to confirm.', 'error');
+                }
+            }
+        );
+    }
+
+    function requestDataExport() {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '/users/settings?tab=account';
+        
+        const settingTypeInput = document.createElement('input');
+        settingTypeInput.type = 'hidden';
+        settingTypeInput.name = 'settingType';
+        settingTypeInput.value = 'account';
+        
+        const requestExportInput = document.createElement('input');
+        requestExportInput.type = 'hidden';
+        requestExportInput.name = 'requestDataExport';
+        requestExportInput.value = 'true';
+        
+        form.appendChild(settingTypeInput);
+        form.appendChild(requestExportInput);
+        document.body.appendChild(form);
+        form.submit();
+        
+        showToast('Data export request submitted. You will receive an email when ready.', 'success');
+    }
+
+    function unblockUser(userId) {
+        // This would typically be an AJAX call
+        showToast('User unblocked successfully', 'success');
+        location.reload(); // Refresh the page to update the list
+    }
+});
+</script>
+
+<style>
+.settings-tabs .nav-link {
+    color: var(--color-text-secondary);
+    border-color: var(--color-border-light);
+    border-bottom: 3px solid transparent;
+    transition: all var(--transition-fast);
+}
+
+.settings-tabs .nav-link:hover {
+    color: var(--color-primary-500);
+    border-color: var(--color-border-light);
+    transform: translateY(-1px);
+}
+
+.settings-tabs .nav-link.active {
+    color: var(--color-primary-500);
+    border-color: var(--color-primary-500);
+    border-bottom-color: var(--color-primary-500);
+    font-weight: var(--font-weight-medium);
+}
+
+.session-item,
+.blocked-users-list,
+.export-request-item {
+    transition: all var(--transition-fast);
+}
+
+.session-item:hover,
+.blocked-users-list:hover,
+.export-request-item:hover {
+    transform: translateX(2px);
+    box-shadow: var(--shadow-sm);
+}
+
+.badge {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+}
+
+.form-check-label {
+    font-weight: var(--font-weight-medium);
+    color: var(--color-text-primary);
+}
+
+.form-text {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+}
+
+.card-header {
+    background-color: var(--color-bg-secondary);
+    border-bottom: 1px solid var(--color-border-light);
+}
+
+.btn {
+    transition: all var(--transition-fast);
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+    .settings-tabs .nav-link {
+        font-size: var(--font-size-sm);
+        padding: var(--spacing-2) var(--spacing-3);
+    }
+    
+    .d-flex.justify-content-between.align-items-center {
+        flex-direction: column;
+        gap: var(--spacing-3);
+        text-align: center;
+    }
+    
+    .card-body .row > div {
+        margin-bottom: var(--spacing-3);
+    }
+}
+</style>

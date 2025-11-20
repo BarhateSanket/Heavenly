@@ -83,6 +83,6 @@ commentSchema.post("findOneAndDelete", async function(comment) {
     }
 });
 
-const Comment = mongoose.model("Comment", commentSchema);
+const Comment = mongoose.models.Comment || mongoose.model("Comment", commentSchema);
 
 module.exports = Comment;
